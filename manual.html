@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>操作手冊｜產業人才投資方案開課申請書產生器</title>
+<style>
+  :root{
+    --main:#0f766e; --main-dark:#134e4a; --bg:#f1f7f6; --card:#ffffff;
+    --border:#cfe0dc; --text:#1f2937; --muted:#6b7280; --danger:#dc2626; --ok:#16a34a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Microsoft JhengHei","PingFang TC",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.9;
+  }
+  header{
+    background:linear-gradient(135deg,var(--main-dark),var(--main));
+    color:#fff; padding:22px 24px;
+  }
+  header h1{font-size:1.3rem; margin:0;}
+  header p{margin:4px 0 0; font-size:.85rem; opacity:.85;}
+  header a{
+    display:inline-block; margin-top:12px; color:#fff; text-decoration:none;
+    background:rgba(255,255,255,.15); padding:7px 16px; border-radius:6px; font-size:.85rem; font-weight:600;
+  }
+  header a:hover{background:rgba(255,255,255,.28);}
+  main{max-width:860px; margin:0 auto; padding:24px 16px 60px;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:20px 24px; margin-bottom:18px;
+  }
+  h2{
+    font-size:1.1rem; color:var(--main-dark); margin:0 0 12px;
+    padding-bottom:8px; border-bottom:2px solid #e3f1ee;
+  }
+  h3{font-size:.95rem; color:var(--main-dark); margin:18px 0 6px;}
+  p{margin:8px 0;}
+  ul,ol{margin:8px 0; padding-left:24px;}
+  li{margin:4px 0;}
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:.88rem;}
+  th,td{border:1px solid var(--border); padding:8px 12px; text-align:left; vertical-align:top;}
+  th{background:#f1f7f6; color:var(--main-dark); white-space:nowrap;}
+  .warning{
+    background:#fef2f2; border:1px solid #fca5a5; border-radius:8px;
+    padding:14px 18px; color:#991b1b; font-weight:600; margin-bottom:18px;
+  }
+  .warning small{display:block; font-weight:400; margin-top:6px; color:#b91c1c;}
+  .tip{
+    background:#e3f1ee; border-left:4px solid var(--main); border-radius:0 8px 8px 0;
+    padding:10px 14px; font-size:.86rem; margin:10px 0;
+  }
+  .badge{
+    display:inline-block; background:#e3f1ee; color:var(--main-dark);
+    border-radius:999px; padding:2px 12px; font-size:.78rem; font-weight:600; margin-right:6px;
+  }
+  footer{text-align:center; padding:18px; font-size:.78rem; color:var(--muted); line-height:1.8;}
+  footer a{color:var(--main);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>操作手冊</h1>
+  <p>產業人才投資方案開課申請書產生器（勞動部勞動力發展署「產業人才投資方案」附表二填表輔助）</p>
+  <a href="index.html">← 回到產生器</a>
+</header>
+
+<main>
+
+<div class="warning">
+  ⚠ 本工具僅供教學、課程及個人使用，禁止未經授權公開發布、販售或商業化使用。
+  <small>本工具為填表輔助性質，並非官方申請系統；產出內容仍需對照在職訓練網（ojt.wda.gov.tw）與所屬分署最新公告之《產業人才投資計畫作業手冊》格式核對，並依規定透過官方資訊系統完成研提訓練計畫。內建範例之單位、人員、課程與數據均為虛構，僅供展示格式與寫法邏輯，不可直接取用送件。</small>
+</div>
+
+<div class="card">
+  <h2>這是什麼工具？</h2>
+  <p>一個單檔、免安裝的網頁工具，協助訓練單位（或輔導顧問）撰寫勞動部勞動力發展署「產業人才投資方案（產業人才投資計畫）」開課申請的核心文件——<b>附表二「訓練班別計畫表」</b>（一個班級填一張）。用瀏覽器打開 <code>index.html</code> 即可使用，不需要架伺服器、不需要安裝任何軟體。</p>
+  <div class="tip">官方作業手冊裡的附表一、三～七等文件，是訓練單位在「在職訓練網」資訊系統完成師資設定、場地設定、班級申請等作業後，由系統直接產出的行政報表——不是需要人工撰寫的敘述性文件，因此<b>不在本工具範圍內</b>。本工具聚焦於附表二裡真正需要撰寫內容、且會被審查委員逐項評分的段落。</div>
+</div>
+
+<div class="card">
+  <h2>功能總覽</h2>
+
+  <h3><span class="badge">1</span>依附表二結構分頁填表</h3>
+  <table>
+    <tr><th>分頁</th><th>對應附表二內容</th></tr>
+    <tr><td>一、案件與課程</td><td>訓練單位、課程名稱、業別分類代碼（含材料費占比上限）、政策性產業、訓練人數／時數／週數、起訖日期、受理期別</td></tr>
+    <tr><td>二、分析 Analyze</td><td>訓練需求調查（產業／區域人力需求調查、訓練需求概述、目的事業主管機關規定）、學員資格</td></tr>
+    <tr><td>三、設計 Design</td><td>訓練目標（核心能力／知識／技能／學習成效／職能級別）、師資／助教資格條件、教學方法</td></tr>
+    <tr><td>四、發展 Develop</td><td>課程大綱（逐時段填寫）、裝備與設施、訓練費用編列說明</td></tr>
+    <tr><td>五、實施 Implement</td><td>促進學習機制（招訓／遴選／激勵）、訓練費、結訓後證照輔導</td></tr>
+    <tr><td>六、評估 Evaluate</td><td>訓練績效評估（反應／學習／行為／成果四層次）</td></tr>
+    <tr><td>七、預覽與列印</td><td>整合後的訓練班別計畫表，可直接列印／匯出 PDF，或按「下載 Word 檔案」輸出 .docx；AI 優化功能也在此分頁</td></tr>
+  </table>
+  <p>所有內容自動儲存在瀏覽器本機（localStorage），關掉頁面再打開資料仍在。</p>
+
+  <h3><span class="badge">2</span>內建 5 組虛構範例（涵蓋不同業別材料費上限）</h3>
+  <table>
+    <tr><th>範例</th><th>業別分類（材料費上限）</th><th>示範重點</th></tr>
+    <tr><td>越南語商務溝通實務班</td><td>語文類（5%）</td><td>國際溝通能力課程、無術科場地的語言課寫法</td></tr>
+    <tr><td>AI行銷數據分析與自動化工具應用班</td><td>電腦資訊技術類（10%）</td><td>兩位講師分授、政策性產業勾選、遠距教學列示</td></tr>
+    <tr><td>地方特色伴手禮烘焙實務班</td><td>餐飲及食品加工類（25%）</td><td>目的事業主管機關規定欄位、學／術科場地並列</td></tr>
+    <tr><td>CNC銑床智慧製造技術班</td><td>工業製造類（35%）</td><td>室外教學（參觀見習）時數占比檢查</td></tr>
+    <tr><td>芳療保健與紓壓技法實務班</td><td>美容、紓壓類（40%，占比上限最高）</td><td>雙講師分授、同一講師授課時數上限提醒</td></tr>
+  </table>
+  <p>5 組範例的訓練時數、人數、固定費用與材料費金額，均已依官方「單一人時成本≤165元／材料費占比上限」規則核算，也依「一般對象政府補助80%／學員自付20%、個位數調整為零」規則試算，可作為金額編列的參考基準。範例中的單位、人名、課程與數據皆為虛構，僅供教學示範，不可直接取用送件。</p>
+
+  <h3><span class="badge">3</span>官方審查規則即時檢查</h3>
+  <p>這是本工具的核心價值——依《產業人才投資計畫作業手冊》「七、規劃訓練班次之標準」與「附錄三、訓練經費編列/支用標準」整理成可即時核算的規則：</p>
+  <ul>
+    <li>受理期別結訓期限：上半年度須<b>當年8月底前</b>結訓，下半年度須<b>翌年2月底前</b>結訓</li>
+    <li>課程大綱各列授課時數加總須等於申報的訓練總時數</li>
+    <li><b>單一時段授課時數≤4小時</b>，<b>同日總時數≤8小時</b>（早／午／晚三時段，每時段間應休息至少1小時）</li>
+    <li><b>室外教學時數不得超過訓練總時數1/5</b></li>
+    <li>同一講師授課時數以<b>不超過54小時</b>為原則（超過需以專案方式呈報審查會議審核）</li>
+    <li><b>固定費用單一人時成本≤165元／人時</b>（訓練時數低於48小時者可提高15%，約189.75元）</li>
+    <li><b>材料費占固定費用比率</b>須在業別分類代碼對應的上限內（5%～40%，依19個職類分類）</li>
+    <li>每位學員訓練費用<b>個位數應調整至零</b></li>
+    <li>政府補助／學員自付比例提示（一般對象80%／20%）</li>
+  </ul>
+  <div class="tip">本工具依《產業人才投資計畫作業手冊》112年10月19日修正版整理；手冊若有更新，具體數字與規則可能調整，送件前務必以在職訓練網與所屬分署最新公告版本為準。</div>
+
+  <h3><span class="badge">4</span>JSON 匯出／匯入</h3>
+  <p>「匯出 JSON」會下載一份結構化的申請書資料檔（<code>industry_talent_課程名稱.json</code>），可作為備份、換電腦繼續編輯，或交給顧問接續處理；「匯入 JSON」則載回先前匯出的檔案。</p>
+
+  <h3><span class="badge">5</span>列印／匯出 PDF，或下載 Word 檔案</h3>
+  <p>「預覽與列印」分頁依附表二章節順序輸出完整申請書內容，未填欄位以紅色斜體標示提醒補齊。按「列印／匯出 PDF」由瀏覽器列印功能輸出；按「下載 Word 檔案」則直接產生 .docx，內容與畫面上的預覽一致，方便再用 Word 編修或加註。首次使用「下載 Word 檔案」需要網路連線（會從 CDN 載入轉檔元件）。</p>
+
+  <h3><span class="badge">6</span>AI 優化（選用，需自備 API 金鑰）</h3>
+  <p>工具本身完全離線可用；若想借助語言模型潤飾內容，可在「預覽與列印」分頁串接以下服務商，讓模型參考目前已填的全部內容，重寫申請書的 15 個敘述段落（訓練需求調查、學員資格條件、訓練目標、招訓／遴選／激勵方式、四層次評估說明）：</p>
+  <table>
+    <tr><th>服務商</th><th>金鑰取得處</th></tr>
+    <tr><td>Claude（Anthropic）</td><td>console.anthropic.com</td></tr>
+    <tr><td>OpenAI</td><td>platform.openai.com</td></tr>
+    <tr><td>Gemini（Google AI Studio）</td><td>aistudio.google.com</td></tr>
+    <tr><td>OpenRouter</td><td>openrouter.ai（一把金鑰可用多家模型）</td></tr>
+  </table>
+  <ul>
+    <li>金鑰只儲存在你這台電腦的瀏覽器（localStorage），請勿在共用電腦上填寫</li>
+    <li>按下優化時，申請書內容會傳送給所選的模型服務商</li>
+    <li>時數、費用、材料品項、日期、師資助教資格與場地資料<b>一律不會交給 AI 改寫</b>——這些是官方逐項核算的規則性欄位；AI 缺少的具體事實會以【】標示請你補填</li>
+    <li>優化前自動備份，可按「還原優化前內容」一鍵復原；AI 輸出仍需逐段核對後再使用</li>
+    <li>服務商暫時過載或限流（如 503、429）時會<b>自動重試最多 2 次</b>（間隔 8、16 秒）；重試後仍失敗，請稍候幾分鐘再按一次，或更換模型／服務商</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>使用方式</h2>
+  <ol>
+    <li>直接用瀏覽器（建議 Chrome / Edge）開啟 <code>index.html</code></li>
+    <li>從範例下拉選單載入一組與你情境相近的業別範例觀察寫法，或選「空白範本」從頭開始</li>
+    <li>先在「一、案件與課程」確認業別分類代碼（決定材料費占比上限），再依序填寫；規則檢查若亮紅字或黃字，依提示修正</li>
+    <li>「四、發展」分頁的課程大綱要逐時段填寫日期／時段／時數，才能讓單一時段、同日總時數、室外教學占比與講師時數上限的即時檢查生效</li>
+    <li>於「七、預覽與列印」檢視整合結果，紅色標示處補齊後列印／匯出 PDF，或下載 Word 檔案</li>
+    <li>建議定期「匯出 JSON」備份</li>
+    <li>正式送件仍須由訓練單位登入「在職訓練網」資訊系統完成師資／場地設定與班級申請，並依作業手冊規定備齊附表一、三～七等文件與送件檢核表（附表二十二）</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>隱私說明</h2>
+  <ul>
+    <li>表單資料只存在你自己瀏覽器的 localStorage，不會傳送到任何伺服器</li>
+    <li>唯一會連網的功能是 AI 優化——按下時會把申請書內容傳送給你自己選擇並持有金鑰的模型服務商；不使用 AI 優化則全程離線</li>
+    <li>處理真實課程的師資與學員個資時，請於授權的裝置上操作，並注意個資保護義務</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>創作者資料</h2>
+  <p><strong>Mark Tsai（蔡豐全）</strong></p>
+  <p>聯絡信箱：<a href="mailto:tsaimark@gmail.com">tsaimark@gmail.com</a></p>
+
+  <h3>專長</h3>
+  <p>銷售數據分析、AI 工具運用、政府補助計畫申請、創業、跨境電商</p>
+
+  <h3>證照</h3>
+  <ul>
+    <li>青創總會 創業輔導顧問師班（2013）</li>
+    <li>青創總會 網路行銷講師培訓班（2014）</li>
+    <li>阿里巴巴 P4P 認證講師（2016）</li>
+    <li>iCap 訓練規劃與評量職能基準課程（2017）</li>
+    <li>iCap 職能導向課程申請認證實作班（2023）</li>
+    <li>iPAS AI 應用規劃師－初級（2025）</li>
+    <li>新北市社會局社區數位陪伴員（2025）</li>
+  </ul>
+
+  <h3>經歷</h3>
+  <ul>
+    <li>勞動力發展署桃竹苗分署 創業顧問（2017－迄今）</li>
+    <li>勞動力發展署（北北基）小型企業人力提升計畫 顧問（2019－迄今）</li>
+    <li>勞動力發展署（桃竹苗）小型企業人力提升計畫 顧問（2019－迄今）</li>
+    <li>農業部農業科技司「科技農企業雙軸轉型躍升發展」科技計畫 業師（2025－2026）</li>
+    <li>勞動力發展署 企業人力資源提升計畫 審查委員（2024）</li>
+    <li>勞動力發展署 職前訓練評鑑計畫 委員（2022）</li>
+    <li>勞動部桃竹苗分署－桃竹苗區域運籌人力資源整合服務計畫 顧問（2022－2023）</li>
+    <li>經濟部中小企業處 SBIR 海選專案 評審委員（2019－2024）</li>
+    <li>勞動力發展署 數位學習課程清單審查會議 審查委員（2024－2025）</li>
+    <li>輔仁大學創新跨領域學院 課務委員（2024－2025）</li>
+    <li>台北市進出口商業同業公會 跨境電商生態村 顧問</li>
+    <li>台灣網商協會 顧問</li>
+    <li>中華職能開發策進會 顧問（2018－2020）</li>
+    <li>新北市汽車美容人員職業工會 顧問（2023－迄今）</li>
+    <li>中華網路行銷講師協會 顧問（2022－迄今）</li>
+    <li>新北市社企電商基地 輔導顧問（2018－2020）</li>
+    <li>阿里巴巴國際站平台 認證講師（2016）</li>
+    <li>巨匠電腦 跨境電子商務班 講師（2016－2017）</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>授權與使用限制</h2>
+  <p>本工具僅供<strong>教學、課程及個人使用</strong>，禁止未經授權公開發布、販售或商業化使用。如需其他用途，請先取得創作者授權。</p>
+</div>
+
+</main>
+
+<footer>
+  製作：Mark Tsai｜<a href="index.html">回到產生器</a>
+</footer>
+
+</body>
+</html>

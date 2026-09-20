@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>產業人才投資方案開課申請書產生器</title>
+<style>
+  :root{
+    --main:#0f766e; --main-dark:#134e4a; --bg:#f1f7f6; --card:#ffffff;
+    --border:#cfe0dc; --text:#1f2937; --muted:#6b7280; --danger:#dc2626; --ok:#16a34a; --warn:#b45309;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Microsoft JhengHei","PingFang TC",sans-serif;
+    background:var(--bg); color:var(--text);
+  }
+  header{
+    background:linear-gradient(135deg,var(--main-dark),var(--main));
+    color:#fff; padding:18px 24px; display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+  header h1{font-size:1.25rem; margin:0;}
+  header p{margin:2px 0 0; font-size:.8rem; opacity:.85;}
+  .actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  button{
+    cursor:pointer; border:none; border-radius:6px; padding:8px 14px; font-size:.85rem;
+    background:#fff; color:var(--main-dark); font-weight:600;
+  }
+  button.secondary{background:rgba(255,255,255,.15); color:#fff;}
+  button.danger{background:#fff; color:var(--danger);}
+  button:hover{filter:brightness(0.95);}
+  nav.tabs{
+    display:flex; background:#fff; border-bottom:1px solid var(--border);
+    padding:0 16px; overflow-x:auto; position:sticky; top:0; z-index:10;
+  }
+  nav.tabs button{
+    background:none; border-radius:0; color:var(--muted); padding:12px 14px;
+    border-bottom:3px solid transparent; white-space:nowrap; font-size:.83rem;
+  }
+  nav.tabs button.active{color:var(--main-dark); border-bottom-color:var(--main);}
+  main{max-width:1150px; margin:0 auto; padding:20px 16px 80px;}
+  section.tab{display:none;}
+  section.tab.active{display:block;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:18px 20px; margin-bottom:16px;
+  }
+  .card h2{font-size:1.05rem; margin:0 0 4px; color:var(--main-dark);}
+  .card .hint{font-size:.78rem; color:var(--muted); margin:0 0 14px; line-height:1.7;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px 16px;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field.full{grid-column:1/-1;}
+  label{font-size:.8rem; color:var(--muted); font-weight:600;}
+  input[type=text],input[type=number],input[type=date],textarea,select{
+    border:1px solid var(--border); border-radius:6px; padding:8px 10px; font-size:.88rem;
+    font-family:inherit; background:#fbfdfc; width:100%;
+  }
+  textarea{resize:vertical; min-height:70px; line-height:1.6;}
+  .list-block{border:1px dashed var(--border); border-radius:8px; padding:10px; margin-top:6px;}
+  .list-row{display:flex; gap:8px; align-items:flex-end; margin-bottom:8px; flex-wrap:wrap;
+    border-bottom:1px dotted var(--border); padding-bottom:8px;}
+  .list-row .field{flex:1; min-width:130px;}
+  .list-row button{padding:6px 10px; background:#fee2e2; color:var(--danger);}
+  .add-row-btn{background:#e3f1ee; color:var(--main-dark); font-size:.8rem; padding:6px 12px;}
+  .sum-check{font-size:.8rem; margin-top:6px; padding:6px 10px; border-radius:6px;}
+  .sum-check.ok{background:#dcfce7; color:var(--ok);}
+  .sum-check.bad{background:#fee2e2; color:var(--danger);}
+  .sum-check.warn{background:#fef3c7; color:var(--warn);}
+  .note-box{background:#fff7ed; border:1px solid #fdba74; border-radius:8px; padding:10px 12px; font-size:.8rem; color:#9a3412; margin-top:8px; line-height:1.7;}
+
+  /* Preview / printable document */
+  #preview-wrap{background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  #preview{padding:32px 40px; font-size:.92rem; line-height:1.9;}
+  #preview h2.doc-title{text-align:center; font-size:1.3rem; margin:0 0 4px; letter-spacing:2px;}
+  #preview p.doc-sub{text-align:center; color:var(--muted); font-size:.85rem; margin:0 0 18px;}
+  #preview h3.section-title{
+    background:#e3f1ee; color:var(--main-dark); padding:6px 10px; border-radius:6px;
+    font-size:1rem; margin:22px 0 10px;
+  }
+  #preview h4{font-size:.95rem; margin:14px 0 6px; color:var(--main-dark);}
+  #preview table{width:100%; border-collapse:collapse; margin-bottom:10px; font-size:.85rem;}
+  #preview table td,#preview table th{border:1px solid #a9c4bc; padding:6px 8px; vertical-align:top; text-align:left;}
+  #preview table th{background:#eef6f4;}
+  #preview p{margin:6px 0; white-space:pre-wrap;}
+  #preview .placeholder{color:#b91c1c; font-style:italic;}
+  #preview .num{text-align:right;}
+  #preview .ind{font-size:.75rem; color:var(--muted); font-weight:400;}
+
+  @media print{
+    header,nav.tabs,.card,.no-print,footer{display:none !important;}
+    body{background:#fff;}
+    main{max-width:none; padding:0;}
+    #preview-wrap{border:none; border-radius:0;}
+    #preview{padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>產業人才投資方案開課申請書產生器</h1>
+    <p>勞動部勞動力發展署「產業人才投資方案」——訓練班別計畫表（附表二）填表輔助工具</p>
+  </div>
+  <div class="actions no-print">
+    <a href="manual.html" target="_blank" style="text-decoration:none;"><button class="secondary" type="button">操作手冊</button></a>
+    <select id="sampleSelect" style="border-radius:6px; border:none; padding:8px 10px; font-size:.85rem; font-weight:600;"></select>
+    <button class="secondary" id="btnLoadSample">載入所選範例</button>
+    <input type="file" id="jsonUpload" accept=".json" style="display:none;">
+    <button class="secondary" id="btnImport">匯入 JSON</button>
+    <button class="secondary" id="btnExport">匯出 JSON</button>
+    <button class="danger" id="btnClear">清空重填</button>
+    <button class="secondary" id="btnExportWord">下載 Word 檔案</button>
+    <button id="btnPrint">列印／匯出 PDF</button>
+  </div>
+</header>
+
+<nav class="tabs no-print">
+  <button data-tab="basic" class="active">一、案件與課程</button>
+  <button data-tab="analyze">二、分析 Analyze</button>
+  <button data-tab="design">三、設計 Design</button>
+  <button data-tab="develop">四、發展 Develop</button>
+  <button data-tab="implement">五、實施 Implement</button>
+  <button data-tab="evaluate">六、評估 Evaluate</button>
+  <button data-tab="preview">七、預覽與列印</button>
+</nav>
+
+<main>
+
+<!-- ============ TAB 1: 案件與課程 ============ -->
+<section class="tab active" data-tab="basic">
+  <div class="card" style="border-color:#7cc9bd; background:#f2fbf9;">
+    <h2>訓練單位與課程基本資訊</h2>
+    <p class="hint">對應官方《產業人才投資計畫作業手冊》<b>附表二「訓練班別計畫表」</b>表頭。這是「一個班級填一張」的核心申請文件——附表一、三～七由訓練單位在官方資訊系統操作後自動產出，非本工具範圍。</p>
+    <div class="grid">
+      <div class="field"><label>年度</label><input type="text" data-path="meta.year" placeholder="例：115"></div>
+      <div class="field">
+        <label>受理期別</label>
+        <select data-path="meta.application_period">
+          <option value="上半年度">上半年度（須當年8月底前結訓）</option>
+          <option value="下半年度">下半年度（須翌年2月底前結訓）</option>
+        </select>
+      </div>
+      <div class="field full"><label>訓練單位名稱</label><input type="text" data-path="meta.unit_name"></div>
+      <div class="field full"><label>課程名稱</label><input type="text" data-path="meta.course_name"></div>
+      <div class="field"><label>訓練職類（如：CNC銑床加工技術人員）</label><input type="text" data-path="meta.training_class"></div>
+      <div class="field">
+        <label>訓練職能（依附錄二定義）</label>
+        <select data-path="meta.training_competency">
+          <option value="">（請選擇）</option>
+          <option value="國際溝通能力課程">國際溝通能力課程</option>
+          <option value="運用數位能力課程">運用數位能力課程</option>
+          <option value="研發創新能力課程">研發創新能力課程</option>
+          <option value="專業技術課程">專業技術課程</option>
+          <option value="管理課程">管理課程</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>業別分類代碼（決定材料費占比上限）</label>
+        <select id="categoryCodeSelect" data-path="meta.category_code"></select>
+      </div>
+      <div class="field">
+        <label>是否為政策性產業</label>
+        <select data-path="meta.is_policy_industry">
+          <option value="false">否</option>
+          <option value="true">是</option>
+        </select>
+      </div>
+      <div class="field full" id="policyNoteField"><label>政策性產業說明</label><input type="text" data-path="meta.policy_industry_note"></div>
+      <div class="field"><label>訓練人數</label><input type="number" data-path="basic_info.people_count"></div>
+      <div class="field"><label>訓練時數（小時）</label><input type="number" data-path="basic_info.total_hours" step="0.5"></div>
+      <div class="field"><label>訓練週數</label><input type="number" data-path="basic_info.weeks"></div>
+      <div class="field"><label>開訓日期</label><input type="date" data-path="basic_info.date_start"></div>
+      <div class="field"><label>結訓日期</label><input type="date" data-path="basic_info.date_end"></div>
+      <div class="field full"><label>上課時間（例：每週一至週五 09:00-12:00、13:00-16:00）</label><input type="text" data-path="basic_info.session_time"></div>
+    </div>
+    <div id="periodCheck" class="sum-check"></div>
+    <div class="note-box">依作業手冊「七、規劃訓練班次之標準」：單一時段上課以<b>4小時為限</b>，一日總時數不得超過<b>8小時</b>，每時段間應休息至少1小時；室外教學不得超過總時數<b>1/5</b>；同一講師授課時數以不超過<b>54小時</b>為原則。這些規則會在「四、發展」分頁依課程大綱自動檢查。</div>
+  </div>
+</section>
+
+<!-- ============ TAB 2: 分析 Analyze ============ -->
+<section class="tab" data-tab="analyze">
+  <div class="card">
+    <h2>訓練需求調查</h2>
+    <p class="hint">對應附表二「規劃與執行能力」之訓練需求調查欄——須論述調查期間、區域範圍、調查對象與產業訓練需求。</p>
+    <div class="field full"><label>1. 產業人力需求調查</label><textarea data-path="analyze.industry_survey" rows="4" placeholder="調查期間、區域範圍、調查對象、產業發展趨勢及該產業之訓練需求"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>2. 區域人力需求調查</label><textarea data-path="analyze.regional_survey" rows="4" placeholder="依產業人力需求調查結果，進行區域性的人力需求調查"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>3. 訓練需求概述</label><textarea data-path="analyze.needs_summary" rows="3"></textarea></div>
+    <div class="grid" style="margin-top:10px;">
+      <div class="field">
+        <label>課程是否須符合目的事業主管機關相關規定</label>
+        <select data-path="analyze.regulated_by_authority">
+          <option value="false">否</option>
+          <option value="true">是</option>
+        </select>
+      </div>
+      <div class="field full" id="regulationNoteField"><label>如為目的事業主管機關已定有訓練課程、時數、參訓人員資格認定及程序等相關規定者，說明規定內容</label><input type="text" data-path="analyze.regulation_note"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>學員資格</h2>
+    <p class="hint">對應附表二「規劃與執行能力」之學員資格欄。<b>補助資格條件（低收入戶、原住民、身心障礙者等）無需列於此</b>，那是學員報名時另外檢附的資格文件，不屬於課程設計內容。</p>
+    <div class="grid">
+      <div class="field"><label>學歷要求</label><input type="text" data-path="analyze.student_education" placeholder="例：不限、高中職以上"></div>
+    </div>
+    <div class="field full" style="margin-top:10px;"><label>資格條件（請詳列參訓學員必備條件或適合之對象）</label><textarea data-path="analyze.student_conditions" rows="3"></textarea></div>
+  </div>
+</section>
+
+<!-- ============ TAB 3: 設計 Design ============ -->
+<section class="tab" data-tab="design">
+  <div class="card">
+    <h2>訓練目標</h2>
+    <p class="hint">對應附表二訓練目標欄——是否符合需求並配合訓練單位核心能力。</p>
+    <div class="field full"><label>1. 單位核心能力介紹（了解單位與課程是否具關聯性）</label><textarea data-path="design.core_capability" rows="3"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>2. 知識（論述學員於課程結束後，所學習之知識內涵）</label><textarea data-path="design.knowledge" rows="3"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>3. 技能（論述學員於課程結束後，所學習之技能應用）</label><textarea data-path="design.skill" rows="3"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>4. 學習成效（綜合論述學員可運用哪些知識、技能，產出哪些成果）</label><textarea data-path="design.learning_outcome" rows="3"></textarea></div>
+    <div class="grid" style="margin-top:10px;">
+      <div class="field full">
+        <label>5. 職能級別</label>
+        <select data-path="design.level">
+          <option value="">（請選擇）</option>
+          <option value="級別1">級別1（規律情境，密切監督與清楚指示下執行常規性工作，不需特殊訓練）</option>
+          <option value="級別2">級別2（大部分規律情境，經常性監督下按指導進行需判斷及理解性的工作，需基本知識技術）</option>
+          <option value="級別3">級別3（部分變動與非常規性情境，一般監督下獨立完成工作，需一定專業知識技術與少許判斷能力）</option>
+          <option value="級別4">級別4（經常變動情境，少許監督下獨立執行涉及規劃設計且需熟練技巧的工作，需相當專業知識技術與判斷決定能力）</option>
+          <option value="級別5">級別5（複雜變動情境，最少監督下自主完成工作，需應用整合系統化專業知識技術與策略思考判斷能力）</option>
+          <option value="級別6">級別6（高度複雜變動情境，應用整合專業知識技術，獨立完成專業與創新工作，需策略思考決策及原創能力）</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>師資（授課教師資格）</h2>
+    <p class="hint">與訓練目標是否切合；依「計畫師資及助教資格標準表」填寫。</p>
+    <div class="list-block" id="instructorsList"></div>
+    <button class="add-row-btn" id="addInstructor">＋ 新增師資</button>
+  </div>
+
+  <div class="card">
+    <h2>助教（無則留空）</h2>
+    <div class="list-block" id="assistantsList"></div>
+    <button class="add-row-btn" id="addAssistant">＋ 新增助教</button>
+  </div>
+
+  <div class="card">
+    <h2>教學方法</h2>
+    <div class="grid">
+      <div class="field"><label>講授教學法</label><select data-path="design.method_lecture"><option value="false">否</option><option value="true">是</option></select></div>
+      <div class="field"><label>討論教學法</label><select data-path="design.method_discussion"><option value="false">否</option><option value="true">是</option></select></div>
+      <div class="field"><label>演練教學法</label><select data-path="design.method_practice"><option value="false">否</option><option value="true">是</option></select></div>
+      <div class="field"><label>其他教學方法（無則留空）</label><input type="text" data-path="design.method_other"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 4: 發展 Develop ============ -->
+<section class="tab" data-tab="develop">
+  <div class="card">
+    <h2>課程大綱</h2>
+    <p class="hint">逐堂／逐時段填寫。每列一個授課時段（早上／下午／晚上），單一時段時數與同日總時數會即時檢查。</p>
+    <div class="list-block" id="outlineList"></div>
+    <button class="add-row-btn" id="addOutline">＋ 新增課程大綱列</button>
+    <div id="outlineHoursCheck" class="sum-check"></div>
+    <div id="sessionCheck" class="sum-check"></div>
+    <div id="outdoorCheck" class="sum-check"></div>
+    <div id="teacherHoursCheck" class="sum-check"></div>
+  </div>
+
+  <div class="card">
+    <h2>裝備與設施</h2>
+    <p class="hint">無術科或學科場地者，該項場地資訊、容納人數與硬體設施說明可免填。</p>
+    <div class="grid">
+      <div class="field"><label>學科場地1 地址</label><input type="text" data-path="develop.classroom1.address"></div>
+      <div class="field"><label>容納人數</label><input type="number" data-path="develop.classroom1.capacity"></div>
+      <div class="field full"><label>硬體設施說明</label><input type="text" data-path="develop.classroom1.equipment"></div>
+    </div>
+    <div class="grid" style="margin-top:10px;">
+      <div class="field"><label>學科場地2 地址（無則留空）</label><input type="text" data-path="develop.classroom2.address"></div>
+      <div class="field"><label>容納人數</label><input type="number" data-path="develop.classroom2.capacity"></div>
+      <div class="field full"><label>硬體設施說明</label><input type="text" data-path="develop.classroom2.equipment"></div>
+    </div>
+    <div class="grid" style="margin-top:10px;">
+      <div class="field"><label>術科場地1 地址（無則留空）</label><input type="text" data-path="develop.workshop1.address"></div>
+      <div class="field"><label>容納人數</label><input type="number" data-path="develop.workshop1.capacity"></div>
+      <div class="field full"><label>硬體設施說明</label><input type="text" data-path="develop.workshop1.equipment"></div>
+    </div>
+    <div class="grid" style="margin-top:10px;">
+      <div class="field"><label>術科場地2 地址（無則留空）</label><input type="text" data-path="develop.workshop2.address"></div>
+      <div class="field"><label>容納人數</label><input type="number" data-path="develop.workshop2.capacity"></div>
+      <div class="field full"><label>硬體設施說明</label><input type="text" data-path="develop.workshop2.equipment"></div>
+    </div>
+    <div class="field full" style="margin-top:10px;"><label>其他器材設備（授課所需相關軟體或非常態性使用之特殊器材）</label><textarea data-path="develop.other_equipment" rows="2"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h2>訓練費用編列說明</h2>
+    <p class="hint">固定費用不分職類採「單一人時成本」上限每人每小時 <b>165 元</b>；訓練時數低於（不含）<b>48 小時</b>者，單一人時成本得提高編列 <b>15%</b>（約 189.75 元）。材料費依業別分類代碼之占比上限編列。</p>
+    <div class="grid">
+      <div class="field"><label>固定費用總額（元）</label><input type="number" data-path="develop.fixed_cost_total"></div>
+      <div class="field"><label>材料費總額（元）</label><input type="number" data-path="develop.material_cost_total"></div>
+    </div>
+    <div id="unitCostCheck" class="sum-check"></div>
+    <div id="materialRatioCheck" class="sum-check"></div>
+    <div class="grid" style="margin-top:10px;">
+      <div class="field full"><label>個人材料品項（請詳列品項、數量）</label><textarea data-path="develop.material_items_individual" rows="2"></textarea></div>
+      <div class="field full"><label>共同材料品項（請詳列品項、數量）</label><textarea data-path="develop.material_items_common" rows="2"></textarea></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 5: 實施 Implement ============ -->
+<section class="tab" data-tab="implement">
+  <div class="card">
+    <h2>促進學習機制</h2>
+    <div class="grid">
+      <div class="field">
+        <label>是否為 iCAP 課程</label>
+        <select data-path="implement.is_icap_course"><option value="false">否</option><option value="true">是，另填標章證號</option></select>
+      </div>
+      <div class="field" id="icapCertField"><label>iCAP 標章證號</label><input type="text" data-path="implement.icap_cert_no"></div>
+    </div>
+    <div class="field full" style="margin-top:10px;"><label>招訓方式</label><textarea data-path="implement.recruit_method" rows="2"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>遴選方式</label><textarea data-path="implement.selection_method" rows="2"></textarea></div>
+    <div class="field full" style="margin-top:10px;"><label>學員激勵辦法</label><textarea data-path="implement.incentive_method" rows="2"></textarea></div>
+  </div>
+
+  <div class="card">
+    <h2>訓練費</h2>
+    <p class="hint">一般對象補助 80%、學員自付 20%；全額補助對象則由分署補助全額——此處請依課程實際收費規劃填寫每班／每人金額。</p>
+    <div class="grid">
+      <div class="field"><label>政府補助（元／每班）</label><input type="number" data-path="implement.gov_per_class"></div>
+      <div class="field"><label>政府補助（元／每人）</label><input type="number" data-path="implement.gov_per_person"></div>
+      <div class="field"><label>學員自付（元／每班）</label><input type="number" data-path="implement.student_per_class"></div>
+      <div class="field"><label>學員自付（元／每人）</label><input type="number" data-path="implement.student_per_person"></div>
+    </div>
+    <div id="feeRoundCheck" class="sum-check"></div>
+    <div id="feeSplitCheck" class="sum-check"></div>
+    <div class="note-box">依規定：每位學員之訓練費用金額，<b>個位數應調整至零</b>；訓練單位招訓收費以提報審核通過之項目為限，不得再向學員收取其他費用。</div>
+  </div>
+
+  <div class="card">
+    <h2>其他</h2>
+    <div class="grid">
+      <div class="field">
+        <label>結訓後是否輔導學員參加政府機關辦理相關證照考試或技能檢定</label>
+        <select data-path="implement.cert_guidance"><option value="false">否（包含非政府機關辦理相關證照或檢定）</option><option value="true">是，另填證照或檢定名稱</option></select>
+      </div>
+      <div class="field" id="certNameField"><label>證照或檢定名稱</label><input type="text" data-path="implement.cert_name"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 6: 評估 Evaluate ============ -->
+<section class="tab" data-tab="evaluate">
+  <div class="card">
+    <h2>訓練績效評估</h2>
+    <p class="hint">依柯氏（Kirkpatrick）四層次評估設計：反應評估、學習評估、行為評估、成果評估，可複選並各自說明採用的機制。</p>
+    <div class="grid">
+      <div class="field"><label>反應評估</label><select data-path="evaluate.reaction_checked"><option value="false">未採用</option><option value="true">採用</option></select></div>
+      <div class="field full"><label>反應評估機制說明（例：課後滿意度調查機制）</label><textarea data-path="evaluate.reaction_note" rows="2"></textarea></div>
+      <div class="field"><label>學習評估</label><select data-path="evaluate.learning_checked"><option value="false">未採用</option><option value="true">採用</option></select></div>
+      <div class="field full"><label>學習評估機制說明（例：課前課後測驗、考試或報告機制）</label><textarea data-path="evaluate.learning_note" rows="2"></textarea></div>
+      <div class="field"><label>行為評估</label><select data-path="evaluate.behavior_checked"><option value="false">未採用</option><option value="true">採用</option></select></div>
+      <div class="field full"><label>行為評估機制說明（例：課後行動計畫調查機制）</label><textarea data-path="evaluate.behavior_note" rows="2"></textarea></div>
+      <div class="field"><label>成果評估</label><select data-path="evaluate.result_checked"><option value="false">未採用</option><option value="true">採用</option></select></div>
+      <div class="field full"><label>成果評估機制說明（例：產值提升、客戶滿意度提升等）</label><textarea data-path="evaluate.result_note" rows="2"></textarea></div>
+      <div class="field full"><label>其他機制</label><input type="text" data-path="evaluate.other_note"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 7: 預覽與列印 ============ -->
+<section class="tab" data-tab="preview">
+  <div class="card no-print">
+    <h2>預覽說明</h2>
+    <p class="hint">以下依附表二「訓練班別計畫表」章節順序輸出。<span style="color:#b91c1c;">紅色斜體</span>為尚未填寫的欄位，送件前必須補齊。列印時只會印出預覽內容。<br>
+    本工具聚焦於附表二的敘述性內容——附表一、三～七等行政報表由官方在職訓練網資訊系統操作後自動產出，非本工具範圍。</p>
+  </div>
+
+  <div class="card no-print" style="border-color:#fcd34d; background:#fffdf5;">
+    <h2>AI 優化申請書內容（串接語言模型 API，選用）</h2>
+    <p class="hint">工具本身完全離線可用；此功能為<b>選用</b>——填入你自己的 API 金鑰，讓語言模型參考目前已填的全部內容，重寫申請書的<b>敘述段落</b>（訓練需求調查、學員資格條件、訓練目標、招訓／遴選／激勵方式、四層次評估說明共 15 段）。<b>時數、費用、材料品項、日期、師資助教資格與場地資料一律不會交給 AI 改寫</b>——這些是官方逐項核算的規則性欄位，AI 缺少的具體事實會以【】標示請你補填。<br>
+    注意：金鑰只儲存在這台電腦的瀏覽器（localStorage），請勿在共用電腦上填寫；按下優化時，目前的申請書內容會傳送給所選的模型服務商。優化前會自動備份，可一鍵還原。</p>
+    <div class="grid">
+      <div class="field">
+        <label>服務商</label>
+        <select id="aiProvider"></select>
+      </div>
+      <div class="field"><label>模型（可自行修改）</label><input type="text" id="aiModel"></div>
+      <div class="field"><label>API 金鑰</label><span style="position:relative;display:block;"><input type="password" id="aiKey" placeholder="貼上你的 API key" autocomplete="off" style="padding-right:34px;box-sizing:border-box;"><button type="button" onclick="var i=this.previousElementSibling;i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" title="顯示／隱藏金鑰" aria-label="顯示／隱藏金鑰" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;padding:4px 6px;opacity:.65;line-height:1;">👁</button></span></div>
+    </div>
+    <div class="field full" style="margin-top:10px;">
+      <label>優化方向提示詞（選填）——告訴 AI 你希望申請書往哪個方向強化</label>
+      <textarea id="aiHint" rows="3" placeholder="例如：請讓訓練需求調查更能對應審查委員關心的產業缺口數據…"></textarea>
+    </div>
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; align-items:center;">
+      <span style="font-size:.78rem; color:var(--muted);">範例提示詞（點擊套用）：</span>
+      <button type="button" class="add-row-btn ai-hint-example" data-hint="請強化「訓練需求調查」的說服力：從具體的產業變化、缺工現況或政策方向切入，說清楚「為什麼此刻需要這門課」，再接到訓練目標。只能沿用目前欄位中已有的資訊，缺的用【請補充】標示，不得自行生成統計數字或調查報告名稱。">① 強化產業需求論述</button>
+      <button type="button" class="add-row-btn ai-hint-example" data-hint="請強化「訓練目標」與「學員資格條件」的邏輯一致性：核心能力介紹、知識、技能、學習成效四段要能呼應課程大綱的實際單元，學員資格條件要能說明「為什麼是這群人」。內容須與課程大綱一致，不要提到大綱裡沒有的單元。">② 強化目標與對象一致性</button>
+      <button type="button" class="add-row-btn ai-hint-example" data-hint="請強化「招訓方式／遴選方式／學員激勵辦法」的可執行性：寫成具體的招生管道、篩選標準與留班誘因，避免空泛用語。">③ 強化招訓與遴選具體性</button>
+      <button type="button" class="add-row-btn ai-hint-example" data-hint="請強化四層次訓練績效評估說明的可檢核性：反應／學習／行為／成果評估各自寫出具體的工具或指標，避免「多元評量」這類空話。不得發明不存在的調查數據或成績。">④ 強化績效評估可檢核性</button>
+      <button type="button" class="add-row-btn ai-hint-example" data-hint="請整篇做語氣一致與去公文腔：刪掉贅詞、空泛形容詞與 AI 慣用語（「此外」「致力於」「打造」「隨著…的發展」等），長短句交錯，每段直接切入重點，不要為了字數灌水。所有事實、時數與數字保持原樣，只調整表達。">⑤ 精簡去公文腔</button>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+      <button id="btnAiGenerate" style="background:#b45309; color:#fff;">AI 優化申請書內容（連網）</button>
+      <button id="btnRestoreBackup" style="background:#e5e7eb; color:var(--text);" disabled>還原優化前內容</button>
+    </div>
+    <div id="aiReport" style="font-size:.83rem; line-height:1.9; margin-top:10px;"></div>
+  </div>
+  <div id="preview-wrap">
+    <div id="preview"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="no-print" style="text-align:center; padding:16px; font-size:.78rem; color:var(--muted); line-height:1.8;">
+  製作：Mark Tsai（詳見 <a href="manual.html" target="_blank" style="color:var(--main);">操作手冊</a>）。本工具僅為填表輔助，<b>並非官方申請系統</b>；內建範例之單位、人員、課程與數據均為虛構，僅供展示。<br>
+  本工具僅供教學、課程及個人使用，禁止未經授權公開發布、販售或商業化使用。實際送件請以在職訓練網（ojt.wda.gov.tw）與所屬分署最新公告之《產業人才投資計畫作業手冊》格式為準。
+</footer>
+
+<script>
+/* ================================================================
+   產業人才投資方案開課申請書產生器
+   - 對應官方《產業人才投資計畫作業手冊》（112年10月19日修正版）附表二「訓練班別計畫表」。
+   - 附表一、三～七等行政報表由訓練單位在官方「在職訓練網」資訊系統操作後自動產出，
+     本工具聚焦於附表二需要人工撰寫的敘述性內容，非官方申請系統。
+   - 內建範例均為完全虛構案例，僅供 Demo，如有雷同純屬巧合。
+   ================================================================ */
+
+/* 業別分類代碼與材料費占比上限（依附錄三整理） */
+const CATEGORY_TABLE = [
+  ["01","語文類",0.05],
+  ["02","管理類",0.05],
+  ["03","財務金融類",0.15],
+  ["04","電腦資訊技術類",0.10],
+  ["05-01","美容、紓壓類",0.40],
+  ["05-02","傳統整復類",0.05],
+  ["06","餐飲及食品加工類",0.25],
+  ["07","手工藝品製作類",0.35],
+  ["08","觀光休閒產業類",0.05],
+  ["09","生技及醫療服務類",0.05],
+  ["10","殯葬服務類",0.40],
+  ["11","文化創意類",0.10],
+  ["12","建築土木工程類",0.35],
+  ["13","研發專利類",0.30],
+  ["14","交通運輸操作服務類",0.20],
+  ["15","綠色能源類",0.30],
+  ["16","精緻農業",0.30],
+  ["17","精密機械類",0.15],
+  ["18","工業、製造類",0.35],
+  ["19","其他類",0.35]
+];
+function categoryInfo(code){ return CATEGORY_TABLE.find(c=>c[0]===code) || null; }
+
+const EMPTY_STATE = {
+  meta:{year:"115", application_period:"下半年度", unit_name:"", course_name:"",
+    training_class:"", training_competency:"", category_code:"", is_policy_industry:false, policy_industry_note:""},
+  basic_info:{people_count:0, total_hours:0, weeks:0, date_start:"", date_end:"", session_time:""},
+  analyze:{industry_survey:"", regional_survey:"", needs_summary:"",
+    regulated_by_authority:false, regulation_note:"",
+    student_education:"", student_conditions:""},
+  design:{core_capability:"", knowledge:"", skill:"", learning_outcome:"", level:"",
+    instructors:[{name:"",education:"",experience:"",license:"",domain:""}],
+    assistants:[],
+    method_lecture:true, method_discussion:false, method_practice:false, method_other:""},
+  develop:{
+    outline:[{date:"",session:"早上",teach_hours:0,exam_hours:0,content:"",type:"學科",location:"",remote:false,outdoor:false,teacher:"",assistant:""}],
+    classroom1:{address:"",capacity:0,equipment:""}, classroom2:{address:"",capacity:0,equipment:""},
+    workshop1:{address:"",capacity:0,equipment:""}, workshop2:{address:"",capacity:0,equipment:""},
+    other_equipment:"",
+    fixed_cost_total:0, material_cost_total:0,
+    material_items_individual:"", material_items_common:""},
+  implement:{is_icap_course:false, icap_cert_no:"",
+    recruit_method:"", selection_method:"", incentive_method:"",
+    gov_per_class:0, gov_per_person:0, student_per_class:0, student_per_person:0,
+    cert_guidance:false, cert_name:""},
+  evaluate:{reaction_checked:false, reaction_note:"", learning_checked:false, learning_note:"",
+    behavior_checked:false, behavior_note:"", result_checked:false, result_note:"", other_note:""}
+};
+
+/* ---------------- 課程大綱（依範例課程分別產生，時數/日/講師時數均已核算合規） ---------------- */
+const OUTLINE_LANG = [
+  {date:"2026-11-02",session:"早上",teach_hours:4,exam_hours:0,content:"商務越南語問候與自我介紹",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-02",session:"下午",teach_hours:3,exam_hours:0,content:"公司簡介與名片交換用語",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-03",session:"早上",teach_hours:4,exam_hours:0,content:"電話應對與會議邀約會話",type:"術科",location:"本單位教室（詳裝備與設施）",remote:true,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-03",session:"下午",teach_hours:3,exam_hours:0,content:"產品介紹與報價協商用語",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-04",session:"早上",teach_hours:4,exam_hours:0,content:"訂單確認與交期溝通",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-04",session:"下午",teach_hours:3,exam_hours:0,content:"客訴處理與道歉用語",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-05",session:"早上",teach_hours:4,exam_hours:0,content:"商務書信與Email常用句型",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-05",session:"下午",teach_hours:3,exam_hours:0,content:"展會接待與客戶接洽會話",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-06",session:"早上",teach_hours:4,exam_hours:0,content:"文化差異與商務禮儀",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-06",session:"下午",teach_hours:3,exam_hours:0,content:"綜合會話演練與情境模擬",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-09",session:"早上",teach_hours:4,exam_hours:0,content:"結業會話能力總測驗",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-09",session:"下午",teach_hours:3,exam_hours:0,content:"商務越南語問候與自我介紹",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""},
+  {date:"2026-11-10",session:"早上",teach_hours:3,exam_hours:0,content:"公司簡介與名片交換用語",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"阮氏美",assistant:""}
+];
+const OUTLINE_AI = [
+  {date:"2026-11-03",session:"早上",teach_hours:4,exam_hours:0,content:"行銷數據來源與蒐集方法",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"林俊宏",assistant:"黃思婷"},
+  {date:"2026-11-03",session:"下午",teach_hours:3,exam_hours:0,content:"消費者輪廓分析實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:true,outdoor:false,teacher:"陳雅婷",assistant:"黃思婷"},
+  {date:"2026-11-04",session:"早上",teach_hours:4,exam_hours:0,content:"AI輔助內容生成工具導入",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"林俊宏",assistant:"黃思婷"},
+  {date:"2026-11-04",session:"下午",teach_hours:3,exam_hours:0,content:"自動化行銷排程工具實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"陳雅婷",assistant:"黃思婷"},
+  {date:"2026-11-05",session:"早上",teach_hours:4,exam_hours:0,content:"成效指標設計與報表判讀",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"林俊宏",assistant:"黃思婷"},
+  {date:"2026-11-05",session:"下午",teach_hours:3,exam_hours:0,content:"AI工具倫理與著作權規範",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"陳雅婷",assistant:"黃思婷"},
+  {date:"2026-11-06",session:"早上",teach_hours:4,exam_hours:0,content:"行銷自動化流程整合實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"林俊宏",assistant:"黃思婷"},
+  {date:"2026-11-06",session:"下午",teach_hours:3,exam_hours:0,content:"期末專題：AI行銷提案發表",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"陳雅婷",assistant:"黃思婷"},
+  {date:"2026-11-09",session:"早上",teach_hours:4,exam_hours:0,content:"行銷數據來源與蒐集方法",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"林俊宏",assistant:"黃思婷"},
+  {date:"2026-11-09",session:"下午",teach_hours:3,exam_hours:0,content:"消費者輪廓分析實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"陳雅婷",assistant:"黃思婷"},
+  {date:"2026-11-10",session:"早上",teach_hours:4,exam_hours:0,content:"AI輔助內容生成工具導入",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"林俊宏",assistant:"黃思婷"},
+  {date:"2026-11-10",session:"下午",teach_hours:3,exam_hours:0,content:"自動化行銷排程工具實作",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"陳雅婷",assistant:"黃思婷"}
+];
+const OUTLINE_FOOD = [
+  {date:"2026-11-09",session:"早上",teach_hours:4,exam_hours:0,content:"地方特色食材認識與選用",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-09",session:"下午",teach_hours:3,exam_hours:0,content:"伴手禮產品開發概念發想",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-10",session:"早上",teach_hours:4,exam_hours:0,content:"基礎麵團製作與發酵實作",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-10",session:"下午",teach_hours:3,exam_hours:0,content:"內餡調製與風味設計實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-11",session:"早上",teach_hours:4,exam_hours:0,content:"烘烤技術與品質控管",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-11",session:"下午",teach_hours:3,exam_hours:0,content:"產品包裝設計與衛生標示規範",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-12",session:"早上",teach_hours:4,exam_hours:0,content:"食品衛生安全與HACCP概念",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-12",session:"下午",teach_hours:3,exam_hours:0,content:"成本試算與定價策略",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-13",session:"早上",teach_hours:4,exam_hours:0,content:"成品評鑑與商品化提案發表",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-13",session:"下午",teach_hours:3,exam_hours:0,content:"地方特色食材認識與選用",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-16",session:"早上",teach_hours:4,exam_hours:0,content:"伴手禮產品開發概念發想",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-16",session:"下午",teach_hours:3,exam_hours:0,content:"基礎麵團製作與發酵實作",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-17",session:"早上",teach_hours:4,exam_hours:0,content:"內餡調製與風味設計實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-17",session:"下午",teach_hours:3,exam_hours:0,content:"烘烤技術與品質控管",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-18",session:"早上",teach_hours:4,exam_hours:0,content:"產品包裝設計與衛生標示規範",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""},
+  {date:"2026-11-18",session:"下午",teach_hours:1,exam_hours:0,content:"食品衛生安全與HACCP概念",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"張永昌",assistant:""}
+];
+const OUTLINE_CNC = [
+  {date:"2026-11-16",session:"早上",teach_hours:4,exam_hours:0,content:"CNC銑床基本操作與安全規範",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-16",session:"下午",teach_hours:3,exam_hours:0,content:"G-code程式設計基礎",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-17",session:"早上",teach_hours:4,exam_hours:0,content:"刀具選用與加工參數設定",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-17",session:"下午",teach_hours:3,exam_hours:0,content:"3D建模與CAM軟體整合實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-18",session:"早上",teach_hours:4,exam_hours:0,content:"智慧製造感測器應用概念",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-18",session:"下午",teach_hours:3,exam_hours:0,content:"加工件精度檢測與品管",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-19",session:"早上",teach_hours:4,exam_hours:0,content:"自動化生產線參觀見習",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:true,teacher:"王志明",assistant:""},
+  {date:"2026-11-19",session:"下午",teach_hours:3,exam_hours:0,content:"期末實作：零件加工專題",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-20",session:"早上",teach_hours:4,exam_hours:0,content:"CNC銑床基本操作與安全規範",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-20",session:"下午",teach_hours:3,exam_hours:0,content:"G-code程式設計基礎",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-23",session:"早上",teach_hours:4,exam_hours:0,content:"刀具選用與加工參數設定",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-23",session:"下午",teach_hours:3,exam_hours:0,content:"3D建模與CAM軟體整合實作",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-24",session:"早上",teach_hours:4,exam_hours:0,content:"智慧製造感測器應用概念",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""},
+  {date:"2026-11-24",session:"下午",teach_hours:2,exam_hours:0,content:"加工件精度檢測與品管",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"王志明",assistant:""}
+];
+const OUTLINE_SPA = [
+  {date:"2026-11-23",session:"早上",teach_hours:4,exam_hours:0,content:"芳香療法基礎理論與精油認識",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-23",session:"下午",teach_hours:3,exam_hours:0,content:"紓壓按摩基本手法實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-24",session:"早上",teach_hours:4,exam_hours:0,content:"經絡與穴位概論",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-24",session:"下午",teach_hours:3,exam_hours:0,content:"全身紓壓按摩流程實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-25",session:"早上",teach_hours:4,exam_hours:0,content:"客戶諮詢與體質評估技巧",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-25",session:"下午",teach_hours:3,exam_hours:0,content:"紓壓芳療套裝療程設計",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-26",session:"早上",teach_hours:4,exam_hours:0,content:"衛生消毒與職業安全規範",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-26",session:"下午",teach_hours:3,exam_hours:0,content:"服務流程與顧客關係經營",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-27",session:"早上",teach_hours:4,exam_hours:0,content:"結業技術實測與作品發表",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-27",session:"下午",teach_hours:3,exam_hours:0,content:"芳香療法基礎理論與精油認識",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-30",session:"早上",teach_hours:4,exam_hours:0,content:"紓壓按摩基本手法實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-11-30",session:"下午",teach_hours:3,exam_hours:0,content:"經絡與穴位概論",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"李佳穎",assistant:""},
+  {date:"2026-12-01",session:"早上",teach_hours:4,exam_hours:0,content:"全身紓壓按摩流程實作",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"周淑芬",assistant:""},
+  {date:"2026-12-01",session:"下午",teach_hours:3,exam_hours:0,content:"客戶諮詢與體質評估技巧",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"周淑芬",assistant:""},
+  {date:"2026-12-02",session:"早上",teach_hours:4,exam_hours:0,content:"紓壓芳療套裝療程設計",type:"術科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"周淑芬",assistant:""},
+  {date:"2026-12-02",session:"下午",teach_hours:3,exam_hours:0,content:"衛生消毒與職業安全規範",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"周淑芬",assistant:""},
+  {date:"2026-12-03",session:"早上",teach_hours:4,exam_hours:0,content:"服務流程與顧客關係經營",type:"學科",location:"本單位教室（詳裝備與設施）",remote:false,outdoor:false,teacher:"周淑芬",assistant:""}
+];
+
+/* ---------------- 虛構範例（Demo 用，單位/人員/課程皆為虛構；金額經核算符合官方費用編列規則） ---------------- */
+const SAMPLE_LIBRARY = {
+  lang:{
+    label:"範例：越南語商務溝通實務班（語文類，45hr）",
+    state:{
+      meta:{year:"115", application_period:"下半年度", unit_name:"翊誠國際人才培訓有限公司",
+        course_name:"越南語商務溝通實務班（範例）", training_class:"國際貿易／外語服務人員",
+        training_competency:"國際溝通能力課程", category_code:"01",
+        is_policy_industry:false, policy_industry_note:""},
+      basic_info:{people_count:20, total_hours:45, weeks:2, date_start:"2026-11-02", date_end:"2026-11-10",
+        session_time:"每週一至週五，上午09:00-12:00、下午13:00-16:00（依課程大綱實際排定）"},
+      analyze:{
+        industry_survey:"依本單位114年度企業包班訓練需求回饋，多家從事對越南出口貿易之中小企業反映，第一線業務與客服人員雖具備一般商用英文能力，惟面對越南籍客戶時仍高度仰賴翻譯人員，導致報價協商、交期溝通等即時應對效率不足（待補：可引用經濟部國際貿易署最新雙邊貿易統計數據佐證）。",
+        regional_survey:"針對本單位所在轄區進行電話訪查，5家對越貿易往來企業中有4家表示未來一年有指派人員赴越南參展或視訊洽談之計畫，惟現有人力僅能以英語或透過翻譯溝通，顯示區域內對「商用越南語溝通」課程有實際需求。",
+        needs_summary:"培養具備商用越南語應對能力之貿易人才，使學員結訓後能獨立完成商務問候、報價協商、訂單溝通與客訴處理等日常業務會話。",
+        regulated_by_authority:false, regulation_note:"",
+        student_education:"不限", student_conditions:"從事或預計從事對越南貿易相關業務之在職人員，具基礎越南語聽力（無須具備口說能力）"},
+      design:{
+        core_capability:"本單位長期承辦外語商務人才培訓，具備東南亞語系師資與情境會話教學經驗，與本課程之商用越南語溝通需求高度切合。",
+        knowledge:"越南商務禮儀與文化差異、商用書信與電話應對常用句型結構。",
+        skill:"能以越南語完成商務問候、產品介紹、報價協商、訂單確認與客訴處理等情境會話。",
+        learning_outcome:"學員結訓後能獨立以越南語完成一次完整的商務洽談情境模擬（自我介紹至訂單確認），並能撰寫簡易商用越南語書信。",
+        level:"級別2",
+        instructors:[{name:"阮氏美", education:"○○大學越南語文學系學士", experience:"8年商用越南語教學及跨國商務翻譯經驗", license:"TOCFL華語文能力測驗高階、越南語專業口譯證書", domain:"商用越南語會話、跨文化溝通"}],
+        assistants:[],
+        method_lecture:true, method_discussion:true, method_practice:true, method_other:""},
+      develop:{
+        outline: OUTLINE_LANG,
+        classroom1:{address:"○○市○○區○○路100號3樓301教室", capacity:20, equipment:"單槍投影機、白板、桌椅20套、音響設備"},
+        classroom2:{address:"",capacity:0,equipment:""},
+        workshop1:{address:"",capacity:0,equipment:""}, workshop2:{address:"",capacity:0,equipment:""},
+        other_equipment:"會話演練採教室內分組進行，無須另闢術科場地",
+        fixed_cost_total:144000, material_cost_total:7000,
+        material_items_individual:"個人講義教材、練習用文具", material_items_common:"情境會話錄音教材、角色扮演道具"},
+      implement:{is_icap_course:false, icap_cert_no:"",
+        recruit_method:"透過本單位官網、對外貿易相關公會電子報及LINE群組發布招訓簡章，公開受理報名。",
+        selection_method:"依報名先後順序辦理，並初審學員是否從事或預計從事對越貿易相關業務。",
+        incentive_method:"全勤且結訓成績合格者，頒發本單位商用越南語進階班優先報名資格。",
+        gov_per_class:120800, gov_per_person:6040, student_per_class:30200, student_per_person:1510,
+        cert_guidance:false, cert_name:""},
+      evaluate:{reaction_checked:true, reaction_note:"結訓當日填寫課後滿意度調查表，就課程內容、教學方式與師資進行量化評分。",
+        learning_checked:true, learning_note:"結業前辦理越南語商務會話總測驗，並蒐集學員課堂會話演練錄音作為學習成果佐證。",
+        behavior_checked:true, behavior_note:"結訓3個月後以問卷追蹤學員是否已實際運用越南語進行商務溝通及運用頻率。",
+        result_checked:false, result_note:"", other_note:""}
+    }
+  },
+  ai:{
+    label:"範例：AI行銷數據分析與自動化工具應用班（電腦資訊技術類，42hr）",
+    state:{
+      meta:{year:"115", application_period:"下半年度", unit_name:"睿思數位人才培訓股份有限公司",
+        course_name:"AI行銷數據分析與自動化工具應用班（範例）", training_class:"數位行銷企劃人員",
+        training_competency:"運用數位能力課程", category_code:"04",
+        is_policy_industry:true, policy_industry_note:"AI應用與數位轉型為本署公告之政策性產業"},
+      basic_info:{people_count:25, total_hours:42, weeks:2, date_start:"2026-11-03", date_end:"2026-11-10",
+        session_time:"每週一至週五，上午09:00-12:00、下午13:00-16:00（依課程大綱實際排定）"},
+      analyze:{
+        industry_survey:"依本單位近兩年辦理企業包班訓練之現場觀察，多家零售與服務業人資窗口反映行銷人員無法解讀廣告成效報表、不熟悉AI工具產製素材的流程，導致行銷委外成本增加（待補：可引用最新產業人才供需調查報告佐證）。",
+        regional_survey:"針對轄區內10家零售服務業進行電話訪查，8家表示行銷人員之數位工具應用能力為近一年招募與內訓的主要缺口。",
+        needs_summary:"培養在職行銷人員運用數據分析與生成式AI工具，獨立完成「數據分析→內容產製→成效追蹤」之完整行銷工作流程。",
+        regulated_by_authority:false, regulation_note:"",
+        student_education:"不限", student_conditions:"在職1年以上之行銷企劃人員，或欲轉任數位行銷職務之企業內部人員，具基礎電腦文書操作能力"},
+      design:{
+        core_capability:"本單位長期承辦數位行銷與AI應用類企業包班訓練，具備完整之數據分析與自動化工具教學團隊。",
+        knowledge:"行銷數據來源與消費者行為分析方法、生成式AI工具應用與著作權規範、行銷成效指標設計原理。",
+        skill:"數據分析工具操作、生成式AI內容產製、行銷自動化排程工具操作、成效報表解讀與簡報提案。",
+        learning_outcome:"學員結訓後能獨立完成一份行銷數據分析報告與一組AI輔助產製之行銷素材，並能提出成效優化提案。",
+        level:"級別3",
+        instructors:[
+          {name:"林俊宏", education:"○○大學資訊管理研究所碩士", experience:"10年數位行銷數據分析與企業顧問經驗", license:"Google Analytics認證、SEO專業認證", domain:"行銷數據分析、成效追蹤"},
+          {name:"陳雅婷", education:"○○大學傳播學系學士", experience:"6年生成式AI行銷內容製作與自動化工具導入經驗", license:"AI行銷應用專業認證", domain:"生成式AI工具應用、行銷自動化流程"}],
+        assistants:[{name:"黃思婷", education:"○○大學資訊管理系學士", experience:"2年數位行銷專案執行經驗", license:"無", domain:"課程器材架設與學員實作操作協助"}],
+        method_lecture:true, method_discussion:true, method_practice:true, method_other:""},
+      develop:{
+        outline: OUTLINE_AI,
+        classroom1:{address:"○○市○○區○○路100號4樓401教室", capacity:25, equipment:"單槍投影機、白板、桌椅25套"},
+        classroom2:{address:"",capacity:0,equipment:""},
+        workshop1:{address:"○○市○○區○○路100號4樓電腦教室", capacity:25, equipment:"個人電腦25台、AI工具帳號25組、大型顯示螢幕"},
+        workshop2:{address:"",capacity:0,equipment:""},
+        other_equipment:"生成式AI工具訂閱共同帳號、雲端共用資料夾",
+        fixed_cost_total:189000, material_cost_total:18500,
+        material_items_individual:"個人AI工具操作帳號使用費、雲端空間", material_items_common:"AI工具訂閱共同帳號、示範教材"},
+      implement:{is_icap_course:false, icap_cert_no:"",
+        recruit_method:"透過本單位官網、產業公會電子報及社群廣告發布招訓簡章，公開受理報名。",
+        selection_method:"依報名先後順序辦理，並初審是否為在職行銷相關人員。",
+        incentive_method:"結訓成績前三名學員頒發獎狀，並優先推薦參加本單位進階數位行銷顧問班。",
+        gov_per_class:166000, gov_per_person:6640, student_per_class:41500, student_per_person:1660,
+        cert_guidance:false, cert_name:""},
+      evaluate:{reaction_checked:true, reaction_note:"結訓當日填寫課後滿意度調查表，就課程內容、教學方式與師資進行量化評分。",
+        learning_checked:true, learning_note:"期末專題發表——每位學員提交一份行銷數據分析報告與一組AI輔助產製之行銷素材，依評分標準表評定。",
+        behavior_checked:true, behavior_note:"結訓3個月後以問卷追蹤學員是否已於實際工作中導入AI輔助行銷流程。",
+        result_checked:true, result_note:"追蹤結訓學員任職企業之行銷委外成本或內容產製時間是否較訓練前降低。", other_note:""}
+    }
+  },
+  food:{
+    label:"範例：地方特色伴手禮烘焙實務班（餐飲及食品加工類，54hr）",
+    state:{
+      meta:{year:"115", application_period:"下半年度", unit_name:"金穗烘焙職能發展協會",
+        course_name:"地方特色伴手禮烘焙實務班（範例）", training_class:"烘焙食品開發人員",
+        training_competency:"專業技術課程", category_code:"06",
+        is_policy_industry:false, policy_industry_note:""},
+      basic_info:{people_count:20, total_hours:54, weeks:2, date_start:"2026-11-09", date_end:"2026-11-18",
+        session_time:"每週一至週五，上午09:00-12:00、下午13:00-16:00（依課程大綱實際排定）"},
+      analyze:{
+        industry_survey:"依本單位轄區內烘焙業者座談意見，地方特色農產品伴手禮開發人才短缺，現有從業人員多僅具基礎烘焙技術，缺乏產品開發、成本試算與商品化提案之整合能力（待補：可引用地方農業主管機關產銷調查數據佐證）。",
+        regional_survey:"訪查轄區內12家烘焙業者，9家表示有意願開發地方特色伴手禮但受限於人才不足而未能推動。",
+        needs_summary:"培養烘焙從業人員具備地方特色伴手禮之產品開發、製作、包裝與商品化提案之整合能力。",
+        regulated_by_authority:true, regulation_note:"本課程涉及食品衛生安全相關規定，依食品安全衛生管理法及地方衛生主管機關公告之食品業者衛生管理規範辦理。",
+        student_education:"不限", student_conditions:"從事或預計從事烘焙相關行業之在職人員，具基礎烘焙操作經驗"},
+      design:{
+        core_capability:"本單位長期辦理烘焙職能培訓，具備完整之產品開發實作場地與師資陣容，與本課程之商品化開發需求切合。",
+        knowledge:"地方特色食材特性、食品衛生安全與HACCP概念、產品成本試算與定價策略。",
+        skill:"伴手禮產品開發企劃、麵團製作與烘烤技術、產品包裝設計與衛生標示規劃。",
+        learning_outcome:"學員結訓後能獨立完成一項地方特色伴手禮產品之開發企劃與試作，並提出商品化與定價提案。",
+        level:"級別2",
+        instructors:[{name:"張永昌", education:"○○餐旅大學烘焙管理系學士", experience:"15年烘焙業內場主廚與產品開發經驗", license:"丙級烘焙食品技術士（麵包、西點蛋糕）、食品安全管制系統（HACCP）訓練合格證書", domain:"烘焙產品開發、食品衛生管理"}],
+        assistants:[],
+        method_lecture:true, method_discussion:false, method_practice:true, method_other:""},
+      develop:{
+        outline: OUTLINE_FOOD,
+        classroom1:{address:"○○市○○區○○路50號1樓烘焙教室（學科區）", capacity:20, equipment:"單槍投影機、白板、桌椅20套"},
+        classroom2:{address:"",capacity:0,equipment:""},
+        workshop1:{address:"○○市○○區○○路50號1樓烘焙實習教室", capacity:20, equipment:"專業烤箱4台、攪拌機4台、發酵箱、烘焙工作檯20席"},
+        workshop2:{address:"",capacity:0,equipment:""},
+        other_equipment:"個人操作工具組（每人1組）、食品級手套、衛生帽",
+        fixed_cost_total:162000, material_cost_total:40000,
+        material_items_individual:"個人烘焙食材、包裝材料", material_items_common:"共用烤箱耗材、清潔消毒用品"},
+      implement:{is_icap_course:false, icap_cert_no:"",
+        recruit_method:"透過本單位官網、地方農會與烘焙同業公會發布招訓簡章，公開受理報名。",
+        selection_method:"依報名先後順序辦理，並初審是否具基礎烘焙操作經驗。",
+        incentive_method:"結訓成績合格者頒發本單位結業證書，並優先推薦參與地方特色伴手禮聯合展售活動。",
+        gov_per_class:161600, gov_per_person:8080, student_per_class:40400, student_per_person:2020,
+        cert_guidance:true, cert_name:"丙級烘焙食品技術士（麵包）"},
+      evaluate:{reaction_checked:true, reaction_note:"結訓當日填寫課後滿意度調查表，就課程內容、教學方式與師資進行量化評分。",
+        learning_checked:true, learning_note:"成品評鑑：每位學員提交一項自製伴手禮成品，依評分標準表評定烘焙技術與產品完成度。",
+        behavior_checked:false, behavior_note:"",
+        result_checked:true, result_note:"追蹤結訓學員是否已將課程所學之產品實際應用於任職單位之產品開發或商品上架。", other_note:""}
+    }
+  },
+  cnc:{
+    label:"範例：CNC銑床智慧製造技術班（工業製造類，48hr）",
+    state:{
+      meta:{year:"115", application_period:"下半年度", unit_name:"精軸機械人才培訓中心",
+        course_name:"CNC銑床智慧製造技術班（範例）", training_class:"機械加工技術人員",
+        training_competency:"專業技術課程", category_code:"18",
+        is_policy_industry:true, policy_industry_note:"智慧製造為本署公告之政策性產業"},
+      basic_info:{people_count:16, total_hours:48, weeks:2, date_start:"2026-11-16", date_end:"2026-11-24",
+        session_time:"每週一至週五，上午09:00-12:00、下午13:00-16:00（依課程大綱實際排定）"},
+      analyze:{
+        industry_survey:"依本單位轄區內機械業者座談意見，CNC銑床操作人力持續短缺，現有人力多僅熟悉傳統操作，對智慧製造整合（感測器應用、加工件精度檢測）較為陌生（待補：可引用地方產業缺工調查數據佐證）。",
+        regional_survey:"訪查轄區內8家機械加工業者，6家表示未來一年有招募CNC銑床操作人力之計畫。",
+        needs_summary:"培養具備CNC銑床操作與智慧製造基礎整合能力之技術人才，銜接業界對加工件精度品管與自動化生產線之需求。",
+        regulated_by_authority:false, regulation_note:"",
+        student_education:"高中職以上", student_conditions:"從事或預計從事機械加工相關行業之在職人員，具基礎機械操作概念"},
+      design:{
+        core_capability:"本單位設有完整之機械實習工廠與CNC設備，具備多年機械加工職能培訓經驗，與本課程之技術訓練需求切合。",
+        knowledge:"CNC銑床加工原理、G-code程式設計基礎、智慧製造感測器應用概念。",
+        skill:"CNC銑床操作、刀具選用與加工參數設定、加工件精度檢測與品管。",
+        learning_outcome:"學員結訓後能獨立完成一件CNC銑床加工實作專題，並依規範完成精度檢測。",
+        level:"級別3",
+        instructors:[{name:"王志明", education:"○○科技大學機械工程系學士", experience:"12年CNC銑床加工與智慧製造現場經驗", license:"甲級機械加工技術士、CNC銑床職類技術士", domain:"CNC銑床操作、智慧製造整合"}],
+        assistants:[],
+        method_lecture:true, method_discussion:false, method_practice:true, method_other:""},
+      develop:{
+        outline: OUTLINE_CNC,
+        classroom1:{address:"○○市○○區○○路8號2樓201教室", capacity:16, equipment:"單槍投影機、白板、桌椅16套"},
+        classroom2:{address:"",capacity:0,equipment:""},
+        workshop1:{address:"○○市○○區○○路8號1樓機械實習工廠", capacity:16, equipment:"CNC銑床8台、量測工具組、安全護具16套"},
+        workshop2:{address:"",capacity:0,equipment:""},
+        other_equipment:"CAM軟體授權16組、個人防護裝備",
+        fixed_cost_total:119040, material_cost_total:40960,
+        material_items_individual:"個人加工材料、量測消耗品", material_items_common:"刀具耗材、機台保養用品"},
+      implement:{is_icap_course:false, icap_cert_no:"",
+        recruit_method:"透過本單位官網、地方機械公會與人力銀行發布招訓簡章，公開受理報名。",
+        selection_method:"依報名先後順序辦理，並初審是否具基礎機械操作概念。",
+        incentive_method:"結訓成績前三名學員頒發獎狀，並優先推薦予合作機械廠商面試機會。",
+        gov_per_class:128000, gov_per_person:8000, student_per_class:32000, student_per_person:2000,
+        cert_guidance:true, cert_name:"丙級機械加工技術士"},
+      evaluate:{reaction_checked:true, reaction_note:"結訓當日填寫課後滿意度調查表，就課程內容、教學方式與師資進行量化評分。",
+        learning_checked:true, learning_note:"期末實作專題：每位學員提交一件CNC加工件，依精度檢測標準評定合格與否。",
+        behavior_checked:true, behavior_note:"結訓3個月後以問卷追蹤學員是否已受僱於機械加工相關職缺並實際運用課程技術。",
+        result_checked:false, result_note:"", other_note:""}
+    }
+  },
+  spa:{
+    label:"範例：芳療保健與紓壓技法實務班（美容紓壓類，60hr）",
+    state:{
+      meta:{year:"115", application_period:"下半年度", unit_name:"馨語美容紓壓職能發展協會",
+        course_name:"芳療保健與紓壓技法實務班（範例）", training_class:"美容紓壓服務人員",
+        training_competency:"專業技術課程", category_code:"05-01",
+        is_policy_industry:false, policy_industry_note:""},
+      basic_info:{people_count:15, total_hours:60, weeks:2, date_start:"2026-11-23", date_end:"2026-12-03",
+        session_time:"每週一至週五，上午09:00-12:00、下午13:00-16:00（依課程大綱實際排定）"},
+      analyze:{
+        industry_survey:"依本單位轄區內美容紓壓業者座談意見，具備完整芳療理論與紓壓技法整合能力之服務人員供給不足，現有從業人員多僅熟悉單一手法，缺乏顧客諮詢與療程設計能力（待補：可引用美容美體職類缺工調查數據佐證）。",
+        regional_survey:"訪查轄區內10家美容紓壓館業者，8家表示招募芳療紓壓專業人才為近一年主要用人困難。",
+        needs_summary:"培養具備芳香療法理論、紓壓按摩技法與顧客諮詢能力之美容紓壓服務人才。",
+        regulated_by_authority:false, regulation_note:"",
+        student_education:"不限", student_conditions:"從事或預計從事美容紓壓相關行業之在職人員，具基礎按摩操作經驗"},
+      design:{
+        core_capability:"本單位設有完整芳療實作教室與紓壓教學設備，長期辦理美容紓壓職能培訓，與本課程需求切合。",
+        knowledge:"芳香療法基礎理論與精油特性、經絡與穴位概論、衛生消毒與職業安全規範。",
+        skill:"紓壓按摩基本手法、全身紓壓按摩流程操作、顧客諮詢與體質評估。",
+        learning_outcome:"學員結訓後能獨立完成一套完整紓壓芳療療程之諮詢、設計與操作。",
+        level:"級別2",
+        instructors:[
+          {name:"李佳穎", education:"○○大學保健營養系學士", experience:"9年芳療紓壓服務與門市教學經驗", license:"丙級美容技術士、國際芳療師認證（IFA）", domain:"芳香療法、紓壓按摩技法"},
+          {name:"周淑芬", education:"○○科技大學化妝品應用系學士", experience:"7年紓壓技術教學與門市管理經驗", license:"乙級美容技術士", domain:"紓壓技法、顧客服務流程"}],
+        assistants:[],
+        method_lecture:true, method_discussion:false, method_practice:true, method_other:""},
+      develop:{
+        outline: OUTLINE_SPA,
+        classroom1:{address:"○○市○○區○○路20號2樓紓壓教室（學科區）", capacity:15, equipment:"單槍投影機、白板、桌椅15套"},
+        classroom2:{address:"",capacity:0,equipment:""},
+        workshop1:{address:"○○市○○區○○路20號2樓芳療實作教室", capacity:15, equipment:"專業按摩床8張、精油組、消毒設備"},
+        workshop2:{address:"",capacity:0,equipment:""},
+        other_equipment:"個人操作巾組、消毒用品",
+        fixed_cost_total:130500, material_cost_total:51750,
+        material_items_individual:"個人精油組、按摩巾", material_items_common:"共用消毒用品、示範教材"},
+      implement:{is_icap_course:false, icap_cert_no:"",
+        recruit_method:"透過本單位官網、美容美髮同業公會與社群廣告發布招訓簡章，公開受理報名。",
+        selection_method:"依報名先後順序辦理，並初審是否具基礎按摩操作經驗。",
+        incentive_method:"結訓成績合格者頒發本單位結業證書，並優先推薦予合作美容紓壓館面試機會。",
+        gov_per_class:145800, gov_per_person:9720, student_per_class:36450, student_per_person:2430,
+        cert_guidance:true, cert_name:"丙級美容技術士"},
+      evaluate:{reaction_checked:true, reaction_note:"結訓當日填寫課後滿意度調查表，就課程內容、教學方式與師資進行量化評分。",
+        learning_checked:true, learning_note:"結業技術實測：每位學員操作一套完整紓壓芳療療程，依評分標準表評定手法熟練度。",
+        behavior_checked:true, behavior_note:"結訓3個月後以問卷追蹤學員是否已受僱於美容紓壓相關職缺並實際運用課程技法。",
+        result_checked:false, result_note:"", other_note:""}
+    }
+  }
+};
+/* ===SAMPLES=== */
+
+const DEFAULT_SAMPLE_KEY = "lang";
+const STORAGE_KEY = "industryTalentCourseState";
+
+/* ---------------- state 基礎 ---------------- */
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function deepMerge(defaults, loaded){
+  if(Array.isArray(defaults)) return Array.isArray(loaded) ? clone(loaded) : clone(defaults);
+  if(defaults !== null && typeof defaults === "object"){
+    const out = {};
+    for(const k of Object.keys(defaults)){
+      if(loaded && typeof loaded === "object" && k in loaded && loaded[k] !== null){
+        out[k] = deepMerge(defaults[k], loaded[k]);
+      } else {
+        out[k] = clone(defaults[k]);
+      }
+    }
+    return out;
+  }
+  return (loaded === undefined || loaded === null) ? defaults : loaded;
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? deepMerge(EMPTY_STATE, JSON.parse(raw)) : null;
+  }catch(e){ return null; }
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let state = loadState() || deepMerge(EMPTY_STATE, clone(SAMPLE_LIBRARY[DEFAULT_SAMPLE_KEY].state));
+
+function getPath(obj, path){
+  return path.split(".").reduce((o,k)=> (o==null? undefined : o[k]), obj);
+}
+function setPath(obj, path, value){
+  const keys = path.split(".");
+  let o = obj;
+  for(let i=0;i<keys.length-1;i++){
+    if(o[keys[i]] == null) o[keys[i]] = {};
+    o = o[keys[i]];
+  }
+  o[keys[keys.length-1]] = value;
+}
+
+/* ---------------- Tabs ---------------- */
+document.querySelectorAll("nav.tabs button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll("section.tab").forEach(s=>s.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelector(`section.tab[data-tab="${btn.dataset.tab}"]`).classList.add("active");
+    if(btn.dataset.tab === "preview") renderPreview();
+  });
+});
+
+/* ---------------- data-path 綁定 ---------------- */
+function bindSimpleInputs(root=document){
+  root.querySelectorAll("[data-path]").forEach(el=>{
+    if(el.dataset.bound) return;
+    el.dataset.bound = "1";
+    const path = el.dataset.path;
+    const val = getPath(state, path);
+    if(el.tagName==="SELECT" && (val===true||val===false)){
+      el.value = String(val);
+    } else {
+      el.value = (val===undefined||val===null) ? "" : val;
+    }
+    const evt = (el.tagName==="SELECT") ? "change" : "input";
+    el.addEventListener(evt, ()=>{
+      let v = el.value;
+      if(el.type === "number") v = v===""? 0 : parseFloat(v);
+      if(el.tagName==="SELECT" && (v==="true"||v==="false")) v = (v==="true");
+      setPath(state, path, v);
+      saveState();
+      refreshDerived();
+      if(path === "meta.is_policy_industry") togglePolicyNote();
+      if(path === "analyze.regulated_by_authority") toggleRegulationNote();
+      if(path === "implement.is_icap_course") toggleIcapField();
+      if(path === "implement.cert_guidance") toggleCertField();
+    });
+  });
+}
+function refreshAllInputs(){
+  document.querySelectorAll("[data-path]").forEach(el=>{
+    const val = getPath(state, el.dataset.path);
+    if(el.tagName==="SELECT" && (val===true||val===false)){
+      el.value = String(val);
+    } else {
+      el.value = (val===undefined||val===null) ? "" : val;
+    }
+  });
+  togglePolicyNote(); toggleRegulationNote(); toggleIcapField(); toggleCertField();
+}
+
+function togglePolicyNote(){
+  document.getElementById("policyNoteField").style.display = state.meta.is_policy_industry ? "" : "none";
+}
+function toggleRegulationNote(){
+  document.getElementById("regulationNoteField").style.display = state.analyze.regulated_by_authority ? "" : "none";
+}
+function toggleIcapField(){
+  document.getElementById("icapCertField").style.display = state.implement.is_icap_course ? "" : "none";
+}
+function toggleCertField(){
+  document.getElementById("certNameField").style.display = state.implement.cert_guidance ? "" : "none";
+}
+
+/* ---------------- 通用清單編輯器 ---------------- */
+function rowGet(row, key){ return key.split(".").reduce((o,k)=> (o==null?undefined:o[k]), row); }
+function rowSet(row, key, value){
+  const keys = key.split(".");
+  let o = row;
+  for(let i=0;i<keys.length-1;i++){ if(o[keys[i]]==null) o[keys[i]]={}; o=o[keys[i]]; }
+  o[keys[keys.length-1]] = value;
+}
+function renderListEditor(cfg){
+  const container = document.getElementById(cfg.container);
+  const arr = getPath(state, cfg.path);
+  container.innerHTML = "";
+  if(!arr.length){
+    container.innerHTML = `<p style="font-size:.8rem; color:var(--muted); margin:4px;">（目前無資料，按下方按鈕新增）</p>`;
+  }
+  arr.forEach((row, idx)=>{
+    const rowEl = document.createElement("div");
+    rowEl.className = "list-row";
+    cfg.fields.forEach(f=>{
+      const fieldEl = document.createElement("div");
+      fieldEl.className = "field";
+      if(f.wide) fieldEl.style.flexBasis = "100%";
+      const label = document.createElement("label");
+      label.textContent = f.label;
+      fieldEl.appendChild(label);
+      let input;
+      if(f.type === "select"){
+        input = document.createElement("select");
+        f.options.forEach(([v,l])=>{
+          const opt = document.createElement("option");
+          opt.value=v; opt.textContent=l;
+          input.appendChild(opt);
+        });
+        input.value = String(rowGet(row,f.key) ?? f.options[0][0]);
+      } else if(f.type === "textarea"){
+        input = document.createElement("textarea");
+        input.rows = f.rows || 2;
+        input.value = rowGet(row,f.key) ?? "";
+      } else if(f.type === "date"){
+        input = document.createElement("input");
+        input.type = "date";
+        input.value = rowGet(row,f.key) ?? "";
+      } else {
+        input = document.createElement("input");
+        input.type = f.type || "text";
+        if(f.step) input.step = f.step;
+        input.value = rowGet(row,f.key) ?? (f.type==="number" ? 0 : "");
+      }
+      input.addEventListener(f.type==="select"?"change":"input", ()=>{
+        let v = input.value;
+        if(f.type==="number") v = v===""?0:parseFloat(v);
+        if(f.bool) v = (v==="true");
+        rowSet(row, f.key, v);
+        saveState();
+        refreshDerived();
+      });
+      fieldEl.appendChild(input);
+      rowEl.appendChild(fieldEl);
+    });
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "刪除";
+    delBtn.addEventListener("click", ()=>{
+      arr.splice(idx,1);
+      saveState();
+      renderListEditor(cfg);
+      refreshDerived();
+    });
+    rowEl.appendChild(delBtn);
+    container.appendChild(rowEl);
+  });
+}
+
+const BOOL_OPTS = [["false","否"],["true","是"]];
+const SESSION_OPTS = [["早上","早上"],["下午","下午"],["晚上","晚上"]];
+const TYPE_OPTS = [["學科","學科"],["術科","術科"]];
+const LIST_CONFIGS = [
+  {container:"instructorsList", path:"design.instructors", addBtn:"addInstructor",
+    newRow:()=>({name:"",education:"",experience:"",license:"",domain:""}),
+    fields:[
+      {key:"name",label:"姓名"},
+      {key:"education",label:"學歷"},
+      {key:"experience",label:"工作經驗與年資"},
+      {key:"license",label:"相關證照"},
+      {key:"domain",label:"專業領域",wide:true}]},
+  {container:"assistantsList", path:"design.assistants", addBtn:"addAssistant",
+    newRow:()=>({name:"",education:"",experience:"",license:"",domain:""}),
+    fields:[
+      {key:"name",label:"姓名"},
+      {key:"education",label:"學歷"},
+      {key:"experience",label:"工作經驗與年資"},
+      {key:"license",label:"相關證照"},
+      {key:"domain",label:"專業領域",wide:true}]},
+  {container:"outlineList", path:"develop.outline", addBtn:"addOutline",
+    newRow:()=>({date:"",session:"早上",teach_hours:0,exam_hours:0,content:"",type:"學科",location:"",remote:false,outdoor:false,teacher:"",assistant:""}),
+    fields:[
+      {key:"date",label:"日期",type:"date"},
+      {key:"session",label:"時段",type:"select",options:SESSION_OPTS},
+      {key:"teach_hours",label:"授課時數",type:"number",step:"0.5"},
+      {key:"exam_hours",label:"技檢訓練時數",type:"number",step:"0.5"},
+      {key:"type",label:"學／術科",type:"select",options:TYPE_OPTS},
+      {key:"content",label:"課程進度／內容",type:"textarea",wide:true,rows:2},
+      {key:"location",label:"授課地點"},
+      {key:"remote",label:"遠距教學",type:"select",bool:true,options:BOOL_OPTS},
+      {key:"outdoor",label:"室外教學",type:"select",bool:true,options:BOOL_OPTS},
+      {key:"teacher",label:"授課教師"},
+      {key:"assistant",label:"助教（無則留空）"}]}
+];
+function initListEditors(){
+  LIST_CONFIGS.forEach(cfg=>{
+    renderListEditor(cfg);
+    document.getElementById(cfg.addBtn).addEventListener("click", ()=>{
+      getPath(state, cfg.path).push(cfg.newRow());
+      saveState();
+      renderListEditor(cfg);
+      refreshDerived();
+    });
+  });
+}
+function rerenderAllLists(){
+  LIST_CONFIGS.forEach(cfg=>renderListEditor(cfg));
+}
+
+/* ---------------- 業別分類代碼下拉 ---------------- */
+function initCategorySelect(){
+  const sel = document.getElementById("categoryCodeSelect");
+  sel.innerHTML = `<option value="">（請選擇）</option>` + CATEGORY_TABLE.map(([code,name,pct])=>
+    `<option value="${code}">${code} ${name}（材料費≤${Math.round(pct*100)}%）</option>`).join("");
+}
+
+/* ---------------- 規則檢查 ---------------- */
+function setCheck(id, cls, text){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(!text){ el.style.display="none"; return; }
+  el.style.display=""; el.className = "sum-check "+cls; el.innerHTML = text;
+}
+function sumOutlineHours(){ return (state.develop.outline||[]).reduce((s,r)=> s+(Number(r.teach_hours)||0), 0); }
+
+function refreshDerived(){
+  saveState();
+  const s = state;
+
+  /* 受理期別結訓期限 */
+  if(s.basic_info.date_end && s.meta.application_period){
+    const end = new Date(s.basic_info.date_end);
+    const startYear = s.basic_info.date_start ? new Date(s.basic_info.date_start).getFullYear() : end.getFullYear();
+    let deadline;
+    if(s.meta.application_period === "上半年度"){
+      deadline = new Date(startYear, 7, 31); // 8月31日
+    } else {
+      deadline = new Date(startYear+1, 1, 28); // 翌年2月28日
+    }
+    setCheck("periodCheck", end<=deadline?"ok":"bad",
+      end<=deadline? `✓ 結訓日期 ${s.basic_info.date_end} 符合${s.meta.application_period}結訓期限（${deadline.toISOString().slice(0,10)}前）。`
+                   : `⚠ 結訓日期 ${s.basic_info.date_end} 已超過${s.meta.application_period}原則上應結訓期限（${deadline.toISOString().slice(0,10)}前），請確認是否需調整。`);
+  } else setCheck("periodCheck","","");
+
+  /* 大綱時數加總 vs 訓練時數 */
+  const hours = Number(s.basic_info.total_hours)||0;
+  const outSum = sumOutlineHours();
+  if(hours>0 && outSum>0){
+    setCheck("outlineHoursCheck", Math.abs(outSum-hours)<0.01?"ok":"bad",
+      Math.abs(outSum-hours)<0.01? `✓ 課程大綱各列授課時數加總 ${outSum} 小時＝訓練時數。`
+        : `⚠ 課程大綱時數加總 ${outSum} 小時，與訓練時數 ${hours} 小時不一致。`);
+  } else setCheck("outlineHoursCheck","","");
+
+  /* 單一時段≤4小時、同日總時數≤8小時 */
+  const rows = (s.develop.outline||[]).filter(r=>(r.date||"").trim());
+  const overSingle = rows.filter(r=>(Number(r.teach_hours)||0)>4);
+  const byDay = {};
+  rows.forEach(r=>{ byDay[r.date] = (byDay[r.date]||0) + (Number(r.teach_hours)||0); });
+  const overDay = Object.entries(byDay).filter(([,v])=>v>8);
+  if(!rows.length){ setCheck("sessionCheck","",""); }
+  else if(overSingle.length || overDay.length){
+    const msgs = [];
+    if(overSingle.length) msgs.push(`${overSingle.length} 列單一時段授課時數超過4小時上限`);
+    if(overDay.length) msgs.push(`${overDay.length} 天同日授課時數加總超過8小時上限（${overDay.map(([d,v])=>`${d}：${v}hr`).join("、")}）`);
+    setCheck("sessionCheck","bad", `⚠ ${msgs.join("；")}。`);
+  } else {
+    setCheck("sessionCheck","ok", `✓ 各時段授課時數均≤4小時，且同日總時數均≤8小時。`);
+  }
+
+  /* 室外教學占比 ≤ 1/5 */
+  const outdoorHours = rows.filter(r=>r.outdoor).reduce((sum,r)=> sum+(Number(r.teach_hours)||0), 0);
+  if(hours>0){
+    const cap = hours/5;
+    setCheck("outdoorCheck", outdoorHours<=cap?"ok":"bad",
+      outdoorHours<=cap? `✓ 室外教學時數 ${outdoorHours} 小時，未超過訓練總時數1/5（${cap.toFixed(1)}小時）上限。`
+                        : `⚠ 室外教學時數 ${outdoorHours} 小時，已超過訓練總時數1/5（${cap.toFixed(1)}小時）上限。`);
+  } else setCheck("outdoorCheck","","");
+
+  /* 同一講師授課時數 ≤54小時（原則） */
+  const byTeacher = {};
+  rows.forEach(r=>{ if((r.teacher||"").trim()) byTeacher[r.teacher] = (byTeacher[r.teacher]||0) + (Number(r.teach_hours)||0); });
+  const overTeacher = Object.entries(byTeacher).filter(([,v])=>v>54);
+  if(!Object.keys(byTeacher).length) setCheck("teacherHoursCheck","","");
+  else setCheck("teacherHoursCheck", overTeacher.length?"warn":"ok",
+    overTeacher.length? `⚠ 下列講師授課時數已超過54小時原則上限：${overTeacher.map(([t,v])=>`${t}（${v}hr）`).join("、")}——如有特殊情況需以專案方式呈報審查會議審核。`
+                       : `✓ 各講師授課時數均未超過54小時原則上限（${Object.entries(byTeacher).map(([t,v])=>`${t}：${v}hr`).join("、")}）。`);
+
+  /* 單一人時成本 ≤165（或<48hr時≤189.75） */
+  const people = Number(s.basic_info.people_count)||0;
+  const fixedTotal = Number(s.develop.fixed_cost_total)||0;
+  if(fixedTotal>0 && people>0 && hours>0){
+    const unitCost = fixedTotal/(people*hours);
+    const cap = hours<48 ? 165*1.15 : 165;
+    setCheck("unitCostCheck", unitCost<=cap+0.01?"ok":"bad",
+      unitCost<=cap+0.01? `✓ 單一人時成本 ${unitCost.toFixed(1)} 元／人時，未超過上限 ${cap.toFixed(2)} 元（${hours<48?"訓練時數<48小時，已適用+15%":"訓練時數≥48小時"}）。`
+                         : `⚠ 單一人時成本 ${unitCost.toFixed(1)} 元／人時，已超過上限 ${cap.toFixed(2)} 元（${hours<48?"訓練時數<48小時，上限為165×1.15":"訓練時數≥48小時，上限為165元"}）。`);
+  } else setCheck("unitCostCheck","","");
+
+  /* 材料費占比上限 */
+  const materialTotal = Number(s.develop.material_cost_total)||0;
+  const cat = categoryInfo(s.meta.category_code);
+  if(materialTotal>0 && fixedTotal>0 && cat){
+    const ratio = materialTotal/fixedTotal;
+    setCheck("materialRatioCheck", ratio<=cat[2]+0.001?"ok":"bad",
+      ratio<=cat[2]+0.001? `✓ 材料費占固定費用 ${(ratio*100).toFixed(1)}%，未超過「${cat[1]}」上限 ${Math.round(cat[2]*100)}%。`
+                          : `⚠ 材料費占固定費用 ${(ratio*100).toFixed(1)}%，已超過「${cat[1]}」上限 ${Math.round(cat[2]*100)}%。`);
+  } else setCheck("materialRatioCheck","","");
+
+  /* 每人費用個位數應調整為零 */
+  const govPP = Number(s.implement.gov_per_person)||0;
+  const stuPP = Number(s.implement.student_per_person)||0;
+  const totalPP = govPP + stuPP;
+  if(totalPP>0){
+    setCheck("feeRoundCheck", totalPP%10===0?"ok":"warn",
+      totalPP%10===0? `✓ 每位學員訓練費用總額 ${totalPP} 元，個位數已調整為零。`
+                     : `⚠ 每位學員訓練費用總額 ${totalPP} 元，個位數應調整至零。`);
+  } else setCheck("feeRoundCheck","","");
+
+  /* 政府80%/學員20%比例提示 */
+  if(totalPP>0){
+    const ratio = govPP/totalPP;
+    setCheck("feeSplitCheck", Math.abs(ratio-0.8)<0.02?"ok":"warn",
+      Math.abs(ratio-0.8)<0.02? `✓ 政府補助約占總費用 ${(ratio*100).toFixed(0)}%，符合一般對象80%補助比例。`
+                              : `提醒：政府補助占總費用 ${(ratio*100).toFixed(0)}%——一般對象補助比例為80%，如為全額補助對象或差異屬正常情況可略過此提醒。`);
+  } else setCheck("feeSplitCheck","","");
+}
+
+/* ---------------- 預覽 ---------------- */
+function esc(s){
+  return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function vText(x){
+  const s = String(x??"").trim();
+  if(!s) return `<span class="placeholder">（未填寫）</span>`;
+  return esc(s);
+}
+function mk(b){ return b ? "✓" : "—"; }
+function facilityRow(label, f){
+  if(!f || !(f.address||"").trim()) return "";
+  return `<tr><th style="width:14%;">${label}</th><td>${esc(f.address)}</td><th style="width:10%;">容納人數</th><td style="width:14%;">${f.capacity||"—"}</td></tr>
+          <tr><th>硬體設施</th><td colspan="3">${vText(f.equipment)}</td></tr>`;
+}
+
+/* ---------------- Word（.docx）匯出——直接走訪已渲染的 #preview DOM，確保內容與畫面一致 ---------------- */
+let _docxLibPromise = null;
+function loadDocxLib(){
+  if(window.docx) return Promise.resolve();
+  if(_docxLibPromise) return _docxLibPromise;
+  _docxLibPromise = new Promise((resolve,reject)=>{
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/docx@9.7.1/dist/index.iife.min.js";
+    s.onload = ()=>resolve();
+    s.onerror = ()=>reject(new Error("Word 匯出元件載入失敗，請確認網路連線"));
+    document.head.appendChild(s);
+  });
+  return _docxLibPromise;
+}
+function _docxLinesFromNode(node){
+  const lines = [[]];
+  (function walk(n, style){
+    n.childNodes.forEach(child=>{
+      if(child.nodeType === Node.TEXT_NODE){
+        const t = child.textContent;
+        if(t) lines[lines.length-1].push({text:t, ...style});
+      } else if(child.nodeType === Node.ELEMENT_NODE){
+        const tag = child.tagName.toLowerCase();
+        if(tag === "br"){
+          lines.push([]);
+        } else if(tag === "b" || tag === "strong"){
+          walk(child, {...style, bold:true});
+        } else if(tag === "i" || tag === "em"){
+          walk(child, {...style, italics:true});
+        } else if(tag === "span" && child.classList.contains("placeholder")){
+          walk(child, {...style, italics:true, color:"B45309"});
+        } else {
+          walk(child, style);
+        }
+      }
+    });
+  })(node, {});
+  return lines;
+}
+function _docxRunsFromLine(line){
+  return (line && line.length) ? line.map(r=>new docx.TextRun({text:r.text, bold:!!r.bold, italics:!!r.italics, color:r.color}))
+                                : [new docx.TextRun({text:""})];
+}
+function _docxParagraphsFromNode(node, paraOpts){
+  return _docxLinesFromNode(node).map(line=>new docx.Paragraph({...(paraOpts||{}), children:_docxRunsFromLine(line)}));
+}
+function _docxTableFromElement(tableEl){
+  const rows = Array.from(tableEl.rows).map(tr=>{
+    const cells = Array.from(tr.children).map(cellEl=>{
+      const isHeader = cellEl.tagName.toLowerCase() === "th";
+      const colspan = parseInt(cellEl.getAttribute("colspan")||"1", 10);
+      return new docx.TableCell({
+        children: _docxParagraphsFromNode(cellEl, {spacing:{after:0}}),
+        columnSpan: colspan > 1 ? colspan : undefined,
+        shading: isHeader ? {fill:"F3F4F6"} : undefined,
+        margins: {top:60, bottom:60, left:100, right:100},
+      });
+    });
+    return new docx.TableRow({children: cells});
+  });
+  return new docx.Table({rows, width:{size:100, type:docx.WidthType.PERCENTAGE}});
+}
+function _docxItemsFromContainer(container){
+  const items = [];
+  Array.from(container.children).forEach(node=>{
+    const tag = node.tagName.toLowerCase();
+    if(tag === "h1" || tag === "h2"){
+      items.push(..._docxParagraphsFromNode(node, {heading:docx.HeadingLevel.HEADING_1, alignment:docx.AlignmentType.CENTER, spacing:{before:200, after:200}}));
+    } else if(tag === "h3"){
+      items.push(..._docxParagraphsFromNode(node, {heading:docx.HeadingLevel.HEADING_2, spacing:{before:320, after:160}}));
+    } else if(tag === "h4" || tag === "h5" || tag === "h6"){
+      items.push(..._docxParagraphsFromNode(node, {heading:docx.HeadingLevel.HEADING_3, spacing:{before:220, after:110}}));
+    } else if(tag === "p"){
+      const center = node.classList.contains("doc-sub") || (node.getAttribute("style")||"").includes("center");
+      items.push(..._docxParagraphsFromNode(node, {alignment: center?docx.AlignmentType.CENTER:undefined, spacing:{after:120}}));
+    } else if(tag === "ul" || tag === "ol"){
+      Array.from(node.children).forEach(li=>{
+        items.push(..._docxParagraphsFromNode(li, {bullet:{level:0}, spacing:{after:60}}));
+      });
+    } else if(tag === "table"){
+      items.push(_docxTableFromElement(node));
+      items.push(new docx.Paragraph({spacing:{after:120}}));
+    } else {
+      items.push(..._docxItemsFromContainer(node));
+    }
+  });
+  return items;
+}
+function sanitizeFilename(name){
+  return (name||"").toString().replace(/[\\/:*?"<>|]/g,"").trim();
+}
+async function exportPreviewAsDocx(docTitle, filenameBase){
+  const btn = document.getElementById("btnExportWord");
+  if(btn){ btn.disabled = true; btn.textContent = "產生中…"; }
+  try{
+    await loadDocxLib();
+    renderPreview();
+    const previewEl = document.getElementById("preview");
+    const doc = new docx.Document({
+      sections: [{ properties:{}, children: _docxItemsFromContainer(previewEl) }],
+    });
+    const blob = await docx.Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (sanitizeFilename(filenameBase) || docTitle) + ".docx";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+  }catch(err){
+    alert("Word 匯出失敗：" + (err.message || err));
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = "下載 Word 檔案"; }
+  }
+}
+
+function renderPreview(){
+  const s = state;
+  let h = "";
+  h += `<h2 class="doc-title">訓練班別計畫表</h2>`;
+  h += `<p class="doc-sub">勞動部勞動力發展署「產業人才投資方案（產業人才投資計畫）」附表二——本文件由填表輔助工具產生，非官方系統輸出；送件前請對照在職訓練網（ojt.wda.gov.tw）與所屬分署最新公告格式核對。</p>`;
+
+  const cat = categoryInfo(s.meta.category_code);
+  h += `<table>
+    <tr><th style="width:18%;">訓練單位名稱</th><td>${vText(s.meta.unit_name)}</td><th style="width:18%;">年度</th><td>${vText(s.meta.year)}年度（${esc(s.meta.application_period)}）</td></tr>
+    <tr><th>課程名稱</th><td colspan="3">${vText(s.meta.course_name)}</td></tr>
+    <tr><th>訓練職類</th><td>${vText(s.meta.training_class)}</td><th>訓練職能</th><td>${vText(s.meta.training_competency)}</td></tr>
+    <tr><th>業別分類代碼</th><td>${cat?esc(cat[0]+" "+cat[1]):`<span class="placeholder">（未選擇）</span>`}</td><th>政策性產業</th><td>${s.meta.is_policy_industry?("是——"+esc(s.meta.policy_industry_note||"")):"否"}</td></tr>
+    <tr><th>訓練人數</th><td>${s.basic_info.people_count||`<span class="placeholder">（未填寫）</span>`}</td><th>訓練時數／週數</th><td>${s.basic_info.total_hours||"—"} 小時／${s.basic_info.weeks||"—"} 週</td></tr>
+    <tr><th>起訖日期</th><td>${vText(s.basic_info.date_start)} ～ ${vText(s.basic_info.date_end)}</td><th>上課時間</th><td>${vText(s.basic_info.session_time)}</td></tr>
+  </table>`;
+
+  h += `<h3 class="section-title">壹、規劃與執行能力</h3>`;
+  const a = s.analyze;
+  h += `<h4>訓練需求調查 <span class="ind">（是否瞭解區域產業需求）</span></h4>`;
+  h += `<p><b>1. 產業人力需求調查：</b>${vText(a.industry_survey)}</p>`;
+  h += `<p><b>2. 區域人力需求調查：</b>${vText(a.regional_survey)}</p>`;
+  h += `<p><b>3. 訓練需求概述：</b>${vText(a.needs_summary)}</p>`;
+  h += `<p><b>是否須符合目的事業主管機關相關規定：</b>${a.regulated_by_authority? "是——"+vText(a.regulation_note) : "否"}</p>`;
+
+  const d = s.design;
+  h += `<h4>訓練目標 <span class="ind">（是否符合需求並配合訓練單位核心能力）</span></h4>`;
+  h += `<p><b>1. 單位核心能力介紹：</b>${vText(d.core_capability)}</p>`;
+  h += `<p><b>2. 知識：</b>${vText(d.knowledge)}</p>`;
+  h += `<p><b>3. 技能：</b>${vText(d.skill)}</p>`;
+  h += `<p><b>4. 學習成效：</b>${vText(d.learning_outcome)}</p>`;
+  h += `<p><b>5. 職能級別：</b>${vText(d.level)}</p>`;
+
+  h += `<h4>師資 <span class="ind">（與訓練目標是否切合）</span></h4>`;
+  const ins = d.instructors.filter(r=>r.name);
+  h += ins.length
+    ? `<table><tr><th style="width:14%;">姓名</th><th style="width:20%;">學歷</th><th style="width:22%;">工作經驗與年資</th><th style="width:22%;">相關證照</th><th>專業領域</th></tr>`
+      + ins.map(r=>`<tr><td>${esc(r.name)}</td><td>${vText(r.education)}</td><td>${vText(r.experience)}</td><td>${vText(r.license)}</td><td>${vText(r.domain)}</td></tr>`).join("") + `</table>`
+    : `<p><span class="placeholder">（未填寫）</span></p>`;
+
+  h += `<h4>助教 <span class="ind">（與訓練目標是否切合）</span></h4>`;
+  const ast = d.assistants.filter(r=>r.name);
+  h += ast.length
+    ? `<table><tr><th style="width:14%;">姓名</th><th style="width:20%;">學歷</th><th style="width:22%;">工作經驗與年資</th><th style="width:22%;">相關證照</th><th>專業領域</th></tr>`
+      + ast.map(r=>`<tr><td>${esc(r.name)}</td><td>${vText(r.education)}</td><td>${vText(r.experience)}</td><td>${vText(r.license)}</td><td>${vText(r.domain)}</td></tr>`).join("") + `</table>`
+    : `<p>無</p>`;
+
+  h += `<h4>學員資格 <span class="ind">（是否明確敘述必備條件與適合對象）</span></h4>`;
+  h += `<p><b>學歷：</b>${vText(a.student_education)}</p>`;
+  h += `<p><b>資格條件：</b>${vText(a.student_conditions)}</p>`;
+
+  h += `<h4>訓練費用編列說明</h4>`;
+  h += `<p><b>固定費用總額：</b>${s.develop.fixed_cost_total||0} 元　<b>材料費總額：</b>${s.develop.material_cost_total||0} 元</p>`;
+  h += `<p><b>個人材料：</b>${vText(s.develop.material_items_individual)}</p>`;
+  h += `<p><b>共同材料：</b>${vText(s.develop.material_items_common)}</p>`;
+
+  h += `<h3 class="section-title">貳、裝備與設施</h3>`;
+  let facRows = "";
+  facRows += facilityRow("學科場地1", s.develop.classroom1);
+  facRows += facilityRow("學科場地2", s.develop.classroom2);
+  facRows += facilityRow("術科場地1", s.develop.workshop1);
+  facRows += facilityRow("術科場地2", s.develop.workshop2);
+  h += facRows ? `<table>${facRows}</table>` : `<p><span class="placeholder">（未填寫）</span></p>`;
+  h += `<p><b>其他器材設備：</b>${vText(s.develop.other_equipment)}</p>`;
+
+  h += `<h3 class="section-title">參、訓練模式</h3>`;
+  h += `<h4>教學方法</h4><p>${["method_lecture","method_discussion","method_practice"].filter(k=>d[k]).map(k=>({method_lecture:"講授教學法",method_discussion:"討論教學法",method_practice:"演練教學法"})[k]).concat(d.method_other?[d.method_other]:[]).join("、") || `<span class="placeholder">（未填寫）</span>`}</p>`;
+  h += `<h4>課程大綱</h4>`;
+  const outline = (s.develop.outline||[]).filter(r=>r.date);
+  h += outline.length
+    ? `<table><tr><th style="width:9%;">日期</th><th style="width:6%;">時段</th><th class="num" style="width:6%;">時數</th><th style="width:6%;">學/術科</th><th>課程進度／內容</th><th style="width:10%;">地點</th><th style="width:5%;">遠距</th><th style="width:5%;">室外</th><th style="width:9%;">授課教師</th></tr>`
+      + outline.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.session)}</td><td class="num">${esc(r.teach_hours)}</td><td>${esc(r.type)}</td><td>${vText(r.content)}</td><td>${esc(r.location)||"—"}</td><td>${mk(r.remote)}</td><td>${mk(r.outdoor)}</td><td>${vText(r.teacher)}</td></tr>`).join("")
+      + `<tr><th colspan="2">合計</th><th class="num">${sumOutlineHours()}</th><td colspan="6"></td></tr></table>`
+    : `<p><span class="placeholder">（未填寫）</span></p>`;
+
+  h += `<h3 class="section-title">肆、訓練績效評估</h3>`;
+  const ev = s.evaluate;
+  h += `<table><tr><th style="width:14%;">評估層次</th><th style="width:8%;">是否採用</th><th>機制說明</th></tr>
+    <tr><td>反應評估</td><td>${mk(ev.reaction_checked)}</td><td>${vText(ev.reaction_note)}</td></tr>
+    <tr><td>學習評估</td><td>${mk(ev.learning_checked)}</td><td>${vText(ev.learning_note)}</td></tr>
+    <tr><td>行為評估</td><td>${mk(ev.behavior_checked)}</td><td>${vText(ev.behavior_note)}</td></tr>
+    <tr><td>成果評估</td><td>${mk(ev.result_checked)}</td><td>${vText(ev.result_note)}</td></tr>
+  </table>`;
+  if((ev.other_note||"").trim()) h += `<p><b>其他機制：</b>${esc(ev.other_note)}</p>`;
+
+  h += `<h3 class="section-title">伍、促進學習機制</h3>`;
+  const im = s.implement;
+  h += `<p><b>是否為iCAP課程：</b>${im.is_icap_course? "是——標章證號："+vText(im.icap_cert_no) : "否"}</p>`;
+  h += `<p><b>招訓方式：</b>${vText(im.recruit_method)}</p>`;
+  h += `<p><b>遴選方式：</b>${vText(im.selection_method)}</p>`;
+  h += `<p><b>學員激勵辦法：</b>${vText(im.incentive_method)}</p>`;
+
+  h += `<h3 class="section-title">陸、訓練費</h3>`;
+  h += `<table><tr><th></th><th class="num">元／每班</th><th class="num">元／每人</th></tr>
+    <tr><th>政府補助</th><td class="num">${im.gov_per_class||0}</td><td class="num">${im.gov_per_person||0}</td></tr>
+    <tr><th>學員自付</th><td class="num">${im.student_per_class||0}</td><td class="num">${im.student_per_person||0}</td></tr>
+    <tr><th>總計</th><td class="num">${(Number(im.gov_per_class)||0)+(Number(im.student_per_class)||0)}</td><td class="num">${(Number(im.gov_per_person)||0)+(Number(im.student_per_person)||0)}</td></tr>
+  </table>`;
+
+  h += `<h3 class="section-title">柒、其他</h3>`;
+  h += `<p><b>結訓後是否輔導學員參加政府機關辦理相關證照考試或技能檢定：</b>${im.cert_guidance? "是——"+vText(im.cert_name) : "否（包含非政府機關辦理相關證照或檢定）"}</p>`;
+
+  document.getElementById("preview").innerHTML = h;
+}
+
+/* ---------------- AI 優化（串接外部 LLM API，選用） ---------------- */
+const AI_PROVIDERS = {
+  claude:     {label:"Claude（Anthropic）",       defaultModel:"claude-opus-4-8"},
+  openai:     {label:"OpenAI",                    defaultModel:"gpt-4o-mini"},
+  gemini:     {label:"Gemini（Google AI Studio）", defaultModel:"gemini-3.5-flash"},
+  openrouter: {label:"OpenRouter",                defaultModel:"openai/gpt-4o-mini"}
+};
+const AI_LEGACY_DEFAULTS = ["gemini-2.5-flash"];
+// AI 只重寫敘述欄位；時數、費用、材料品項、日期、師資助教與場地資料一律不交給模型改
+const AI_FIELDS = [
+  ["analyze.industry_survey",      "industry_survey",   "產業人力需求調查"],
+  ["analyze.regional_survey",      "regional_survey",   "區域人力需求調查"],
+  ["analyze.needs_summary",        "needs_summary",     "訓練需求概述"],
+  ["analyze.student_conditions",   "student_conditions","學員資格條件"],
+  ["design.core_capability",       "core_capability",   "單位核心能力介紹"],
+  ["design.knowledge",             "knowledge",         "知識內涵"],
+  ["design.skill",                 "skill",             "技能內涵"],
+  ["design.learning_outcome",      "learning_outcome",  "學習成效"],
+  ["implement.recruit_method",     "recruit_method",    "招訓方式"],
+  ["implement.selection_method",   "selection_method",  "遴選方式"],
+  ["implement.incentive_method",   "incentive_method",  "學員激勵辦法"],
+  ["evaluate.reaction_note",       "reaction_note",     "反應評估機制說明"],
+  ["evaluate.learning_note",       "learning_note",     "學習評估機制說明"],
+  ["evaluate.behavior_note",       "behavior_note",     "行為評估機制說明"],
+  ["evaluate.result_note",         "result_note",       "成果評估機制說明"]
+];
+
+function loadAiConfig(){
+  try{ return JSON.parse(localStorage.getItem("industryTalentApiConfig")) || {}; }catch(e){ return {}; }
+}
+function saveAiConfig(cfg){ localStorage.setItem("industryTalentApiConfig", JSON.stringify(cfg)); }
+
+function initAiPanel(){
+  const sel = document.getElementById("aiProvider");
+  sel.innerHTML = Object.entries(AI_PROVIDERS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("");
+  const cfg = loadAiConfig();
+  sel.value = cfg.provider && AI_PROVIDERS[cfg.provider] ? cfg.provider : "claude";
+  const savedModel = (cfg.model && !AI_LEGACY_DEFAULTS.includes(cfg.model)) ? cfg.model : "";
+  document.getElementById("aiModel").value = savedModel || AI_PROVIDERS[sel.value].defaultModel;
+  document.getElementById("aiKey").value = cfg.apiKey || "";
+  document.getElementById("aiHint").value = cfg.hint || "";
+  document.querySelectorAll(".ai-hint-example").forEach(btn=>{
+    btn.addEventListener("click", ()=>{ document.getElementById("aiHint").value = btn.dataset.hint; });
+  });
+  sel.addEventListener("change", ()=>{
+    const modelEl = document.getElementById("aiModel");
+    const isDefault = Object.values(AI_PROVIDERS).some(v=>v.defaultModel === modelEl.value.trim())
+                   || AI_LEGACY_DEFAULTS.includes(modelEl.value.trim());
+    if(!modelEl.value.trim() || isDefault) modelEl.value = AI_PROVIDERS[sel.value].defaultModel;
+  });
+  if(localStorage.getItem("industryTalentCourseBackup")) document.getElementById("btnRestoreBackup").disabled = false;
+}
+
+function buildAiPrompt(){
+  const s = state;
+  const facts = [
+    `課程名稱：${s.meta.course_name || "（未填）"}；訓練單位：${s.meta.unit_name || "（未填）"}；業別分類：${s.meta.category_code || "（未填）"}`,
+    `訓練人數：${s.basic_info.people_count||0}人；訓練時數：${s.basic_info.total_hours||0}小時；訓練週數：${s.basic_info.weeks||0}週；起訖日期：${s.basic_info.date_start||"（未填）"}～${s.basic_info.date_end||"（未填）"}`,
+    `課程大綱單元（不可更動、不可新增）：${(s.develop.outline||[]).filter(r=>r.content).map(r=>r.content).join("；") || "（未填）"}`,
+    `師資（不可更動、不可新增）：${s.design.instructors.filter(r=>r.name).map(r=>`${r.name}（${r.domain||"未填專業領域"}）`).join("、") || "（未填）"}`,
+    `訓練費（不可更動）：政府補助每人${s.implement.gov_per_person||0}元／學員自付每人${s.implement.student_per_person||0}元`
+  ].join("\n");
+
+  const current = AI_FIELDS.map(([path, key, label])=>{
+    const v = String(getPath(state, path)||"").trim();
+    return `《${label}》\n${v || "（目前空白）"}`;
+  }).join("\n\n");
+
+  const hint = (document.getElementById("aiHint")?.value || "").trim();
+  const hintBlock = hint
+    ? `\n【使用者指定的優化方向（除了不可捏造事實，其餘請優先遵循）】\n${hint}\n`
+    : "";
+
+  return `你是一位熟悉勞動部勞動力發展署「產業人才投資方案」開課申請審查邏輯的資深顧問。審查委員會依審查計分表評估辦訓能力與計畫內容，請根據下面的事實資料，改寫申請書的敘述段落，讓每一段都具體、可檢核、邏輯連貫。
+
+寫作要求：
+1. 專業書面語，第三人稱（本課程／本單位），長短句交錯，直接切入重點，不要公文腔也不要簡報腔。
+2. 不要用制式的 AI 慣用語（例如「此外」「不僅…更…」「致力於」「彰顯」「打造」「隨著…的發展」），避免三項式排比與空泛形容詞堆疊。
+3. 絕對不可以捏造事實：不得發明產業統計數據、調查報告名稱、學員人數或評量成績；只能使用事實資料與目前段落中已出現的資訊。段落中已標「待補」的內容保持「待補」原樣。
+4. 段落需要但資料中沒有的具體資訊，用【請補充：需要什麼】標示，讓申請人自己填。
+5. 各段之間要互相呼應：產業需求→訓練目標→學員資格→課程大綱→訓練績效評估是同一條邏輯鏈；段落中出現的單元名稱、時數、金額必須與事實資料一致。
+
+【事實資料】
+${facts}
+${hintBlock}
+【目前的段落內容（改寫時保留其中的事實）】
+${current}
+
+請只輸出一個 JSON 物件，不要 markdown 圍欄、不要任何其他文字。鍵固定如下，值為改寫後的完整段落（字串，可含換行）：
+{${AI_FIELDS.map(([,k])=>`"${k}":"..."`).join(",")}}`;
+}
+
+async function callLLM(provider, model, apiKey, prompt, onRetry){
+  let url, headers, body, extract;
+  if(provider === "claude"){
+    url = "https://api.anthropic.com/v1/messages";
+    headers = {
+      "content-type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    };
+    body = {model, max_tokens: 16000, messages: [{role: "user", content: prompt}]};
+    extract = (d)=>{
+      if(d.stop_reason === "refusal") throw new Error("模型拒絕了這個請求（refusal）");
+      const t = (d.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+      if(!t) throw new Error("回應中沒有文字內容");
+      return t;
+    };
+  } else if(provider === "openai"){
+    url = "https://api.openai.com/v1/chat/completions";
+    headers = {"content-type": "application/json", "authorization": "Bearer " + apiKey};
+    body = {model, messages: [{role: "user", content: prompt}]};
+    extract = (d)=>d.choices?.[0]?.message?.content || (()=>{throw new Error("回應中沒有文字內容")})();
+  } else if(provider === "gemini"){
+    url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+    headers = {"content-type": "application/json", "x-goog-api-key": apiKey};
+    body = {contents: [{parts: [{text: prompt}]}]};
+    extract = (d)=>{
+      const t = (d.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("");
+      if(!t) throw new Error("回應中沒有文字內容");
+      return t;
+    };
+  } else if(provider === "openrouter"){
+    url = "https://openrouter.ai/api/v1/chat/completions";
+    headers = {"content-type": "application/json", "authorization": "Bearer " + apiKey};
+    body = {model, messages: [{role: "user", content: prompt}]};
+    extract = (d)=>d.choices?.[0]?.message?.content || (()=>{throw new Error("回應中沒有文字內容")})();
+  } else {
+    throw new Error("不支援的服務商");
+  }
+  const RETRYABLE = new Set([429, 500, 503, 529]);
+  const MAX_TRIES = 3;
+  for(let attempt = 1; attempt <= MAX_TRIES; attempt++){
+    const resp = await fetch(url, {method: "POST", headers, body: JSON.stringify(body), signal: AbortSignal.timeout(180000)});
+    const raw = await resp.text();
+    if(resp.ok) return extract(JSON.parse(raw));
+    let msg = raw.slice(0, 300);
+    try{
+      const err = JSON.parse(raw);
+      msg = err.error?.message || err.message || msg;
+    }catch(e){}
+    if(RETRYABLE.has(resp.status) && attempt < MAX_TRIES){
+      const waitSec = attempt * 8;
+      if(onRetry) onRetry(attempt, resp.status, waitSec);
+      await new Promise(r => setTimeout(r, waitSec * 1000));
+      continue;
+    }
+    if(resp.status === 404) msg += "——這通常表示模型名稱錯誤或已停用，請到該服務商的模型列表確認目前可用的模型 ID，填入上方「模型」欄位";
+    if(RETRYABLE.has(resp.status)) msg += `——已自動重試 ${MAX_TRIES-1} 次仍失敗，多為服務商暫時過載，請稍候幾分鐘再試，或更換模型／服務商`;
+    throw new Error(`API 回應 ${resp.status}：${msg}`);
+  }
+}
+
+function extractJsonObject(text){
+  const cleaned = text.replace(/```json|```/g, "");
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if(start < 0 || end <= start) throw new Error("模型輸出中找不到 JSON 物件：" + text.slice(0, 120));
+  return JSON.parse(cleaned.slice(start, end + 1));
+}
+
+function initAiButtons(){
+  document.getElementById("btnAiGenerate").addEventListener("click", async ()=>{
+    const provider = document.getElementById("aiProvider").value;
+    const model = document.getElementById("aiModel").value.trim();
+    const apiKey = document.getElementById("aiKey").value.trim();
+    const reportEl = document.getElementById("aiReport");
+    if(!apiKey){ reportEl.innerHTML = `<div class="sum-check bad">✗ 請先填入 API 金鑰</div>`; return; }
+    if(!model){ reportEl.innerHTML = `<div class="sum-check bad">✗ 請填入模型名稱</div>`; return; }
+    if(!confirm(`將把目前的申請書內容傳送給 ${AI_PROVIDERS[provider].label} 進行優化，優化結果會覆蓋 ${AI_FIELDS.length} 個敘述欄位（會先自動備份）。確定執行嗎？`)) return;
+
+    saveAiConfig({provider, model, apiKey, hint: document.getElementById("aiHint").value});
+    const btn = document.getElementById("btnAiGenerate");
+    btn.disabled = true;
+    reportEl.innerHTML = `<div class="sum-check ok">呼叫 ${AI_PROVIDERS[provider].label}（${esc(model)}）中，請稍候…</div>`;
+    try{
+      const text = await callLLM(provider, model, apiKey, buildAiPrompt(), (attempt, status, waitSec)=>{
+        reportEl.innerHTML = `<div class="sum-check warn">API 回應 ${status}（服務商暫時過載／限流），${waitSec} 秒後自動重試（第 ${attempt}／2 次）…</div>`;
+      });
+      const parsed = extractJsonObject(text);
+      localStorage.setItem("industryTalentCourseBackup", JSON.stringify(state));
+      document.getElementById("btnRestoreBackup").disabled = false;
+      const applied = [], skipped = [];
+      for(const [path, key, label] of AI_FIELDS){
+        const v = parsed[key];
+        if(typeof v === "string" && v.trim().length > 10){
+          setPath(state, path, v.trim());
+          applied.push(label);
+        } else {
+          skipped.push(label);
+        }
+      }
+      if(!applied.length) throw new Error("模型回傳的 JSON 中沒有可用的欄位");
+      saveState();
+      refreshAllInputs(); refreshDerived(); renderPreview();
+      reportEl.innerHTML = `
+        <div class="sum-check ok" style="margin-bottom:6px;">✓ AI 已優化 ${applied.length} 個段落（【】內為需要你補充的事實），請逐段核對事實後再使用</div>
+        ${applied.map(l=>`<div>✓ ${esc(l)}</div>`).join("")}
+        ${skipped.length ? `<div style="color:#9a3412;">⚠ 未更新：${skipped.map(esc).join("、")}</div>` : ""}`;
+    }catch(err){
+      const msg = err.name === "TimeoutError" ? "請求逾時（180秒），請重試或換模型" : err.message;
+      reportEl.innerHTML = `<div class="sum-check bad">✗ 優化失敗：${esc(msg)}</div>`;
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById("btnRestoreBackup").addEventListener("click", ()=>{
+    const raw = localStorage.getItem("industryTalentCourseBackup");
+    if(!raw){ alert("沒有可還原的備份。"); return; }
+    if(!confirm("確定要還原到 AI 優化前的內容嗎？目前內容會被覆蓋。")) return;
+    state = deepMerge(EMPTY_STATE, JSON.parse(raw));
+    saveState();
+    refreshAllInputs(); rerenderAllLists(); refreshDerived(); renderPreview();
+    document.getElementById("aiReport").innerHTML = `<div class="sum-check ok">✓ 已還原優化前內容。</div>`;
+  });
+}
+
+/* ---------------- 頂部按鈕 ---------------- */
+function initHeader(){
+  const sel = document.getElementById("sampleSelect");
+  Object.entries(SAMPLE_LIBRARY).forEach(([k,v])=>{
+    const o = document.createElement("option"); o.value=k; o.textContent=v.label; sel.appendChild(o);
+  });
+  const oEmpty = document.createElement("option"); oEmpty.value="__empty__"; oEmpty.textContent="空白範本（自行填寫）"; sel.appendChild(oEmpty);
+
+  document.getElementById("btnLoadSample").addEventListener("click", ()=>{
+    const key = sel.value;
+    const label = key==="__empty__" ? "空白範本" : SAMPLE_LIBRARY[key].label;
+    if(!confirm(`確定要載入「${label}」嗎？目前填寫的內容會被覆蓋。`)) return;
+    state = key==="__empty__" ? clone(EMPTY_STATE) : deepMerge(EMPTY_STATE, clone(SAMPLE_LIBRARY[key].state));
+    saveState();
+    refreshAllInputs(); rerenderAllLists(); refreshDerived();
+    alert("已載入。");
+  });
+
+  document.getElementById("btnClear").addEventListener("click", ()=>{
+    if(!confirm("確定要清空所有欄位嗎？此動作無法復原。")) return;
+    state = clone(EMPTY_STATE);
+    saveState();
+    refreshAllInputs(); rerenderAllLists(); refreshDerived();
+  });
+
+  document.getElementById("btnPrint").addEventListener("click", ()=>{
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll("section.tab").forEach(s=>s.classList.remove("active"));
+    document.querySelector(`nav.tabs button[data-tab="preview"]`).classList.add("active");
+    document.querySelector(`section.tab[data-tab="preview"]`).classList.add("active");
+    renderPreview();
+    setTimeout(()=>window.print(), 100);
+  });
+
+  document.getElementById("btnExportWord").addEventListener("click", ()=>{
+    exportPreviewAsDocx("訓練班別計畫表", state.meta.course_name || state.meta.unit_name);
+  });
+
+  document.getElementById("btnExport").addEventListener("click", ()=>{
+    const out = clone(state);
+    const name = (state.meta.course_name||"未命名課程").replace(/[\\/:*?"<>|]/g,"_").slice(0,40);
+    const blob = new Blob([JSON.stringify(out,null,2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `industry_talent_${name}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById("btnImport").addEventListener("click", ()=> document.getElementById("jsonUpload").click());
+  document.getElementById("jsonUpload").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const data = JSON.parse(reader.result);
+        if(!data.meta || !data.basic_info) throw new Error("不是本工具的申請書資料檔（缺 meta / basic_info）");
+        if(!confirm(`確定要匯入「${data.meta.course_name||file.name}」嗎？目前填寫的內容會被覆蓋。`)) return;
+        state = deepMerge(EMPTY_STATE, data);
+        saveState();
+        refreshAllInputs(); rerenderAllLists(); refreshDerived();
+        alert("匯入完成。請逐欄核對內容。");
+      }catch(err){
+        alert("匯入失敗："+err.message);
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file, "utf-8");
+  });
+}
+
+/* ---------------- 啟動 ---------------- */
+initCategorySelect();
+initHeader();
+initListEditors();
+bindSimpleInputs();
+togglePolicyNote(); toggleRegulationNote(); toggleIcapField(); toggleCertField();
+initAiPanel();
+initAiButtons();
+refreshDerived();
+</script>
+</body>
+</html>
