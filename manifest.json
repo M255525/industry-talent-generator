@@ -1,0 +1,16 @@
+{
+  "name": "產業人才投資方案開課申請書產生器",
+  "short_name": "產投申請書",
+  "description": "勞動部勞動力發展署「產業人才投資方案」訓練班別計畫表（附表二）填表輔助工具",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#134e4a",
+  "theme_color": "#0f766e",
+  "lang": "zh-TW",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -64,6 +64,12 @@ PDF（列印）與 Word 匯出皆嵌入「馬克老師」吉祥物浮水印，�
 
 `<body>` 開頭、`<header>` 之前的一般 flow 元素（非 fixed；`nav.tabs{position:sticky;top:0}` 不需要額外 padding-top 補償），獨立 `<script>` IIFE，跟浮水印/序號授權完全無關，直接呼叫工作區共用的跑馬燈端點（`https://script.google.com/macros/s/AKfycbwKX0.../exec`，POST 空序號取得 `marquee` 陣列），`localStorage` key `industryTalentMarquee`，每 20 分鐘重抓一次。改跑馬燈內容直接編輯共用 Google Sheet 即可，不需重新部署。已用 claude-in-chrome 驗證能正確抓到即時內容並顯示。
 
+## PWA 加入主畫面（2026-09-21 新增）
+
+`manifest.json`＋`service-worker.js`（network-first＋同源快取備援）＋`icons/`（PIL 產生，深色墨綠底＋白色文件+對勾圖案，象徵「合規審查」，192/512/maskable-512/apple-touch-icon 四種尺寸，產生腳本用完即刪未進 repo）；安裝按鈕 `#installBtn`＋`#toast`，放在 footer。安裝腳本沿用 [[pwa-install-rollout]] 記載已修好的版本（iOS/macOS Safari 走文字提示，其餘走 `beforeinstallprompt`）。
+
+**踩坑（本次實際發生，修正後才動）**：PWA 安裝腳本的 `<script>` 一開始被我插在 `<body>` 開頭（跑馬燈/浮水印區塊旁邊），執行時 `document.getElementById('installBtn')` 因為 footer 的按鈕元素還沒被解析而拿到 `null`，導致點擊事件從未綁定、按鈕點了完全沒反應且無任何錯誤訊息——這正是 `[[aivideo-studio-web-install-button-fix]]` 記載過的同一種「安裝腳本執行時機早於按鈕元素解析」的錯誤，此工具也踩了一次。**修法：PWA 安裝腳本必須放在 `</body>` 前、所有 HTML（含 footer/installBtn/toast）都解析完之後**，跟主程式 `<script>` 一樣放在檔案最後面，不要放在開頭跟跑馬燈/浮水印同一批。已用 claude-in-chrome 實測修正前後行為差異確認。
+
 ## 指令
 
 無建置/測試指令。修改 `index.html` 後直接用瀏覽器開啟驗證，或暫起 `python -m http.server 8818 --directory industry-talent-generator` 測完關閉（8818 為工作區目前最大已用埠號 8817 之後第一個空號）。
