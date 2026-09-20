@@ -60,6 +60,10 @@ PDF（列印）與 Word 匯出皆嵌入「馬克老師」吉祥物浮水印，�
 - **PDF／列印端**：`#printWatermark`（`<body>` 開頭）平常 `display:none`，只在 `@media print` 顯示為 `position:fixed;inset:0` 的置中 `<img>`（`initWatermark()` 把 `WATERMARK_DATA_URI` 寫進 `#wmImg`），逐字比照 `mandala-thinking`/`new-product-strategy-studio` 已驗證的 CSS 結構。**浮水印務必用 `<img>` 而非 CSS `background-image`**——瀏覽器「列印背景圖形」選項預設關閉，`background-image` 印不出來，`<img>` 是內容元素不受此限制（`restaurant-feasibility-calculator` CLAUDE.md 記載的既有教訓）。本工具的「預覽與列印」分頁本身就是獨立靜態預覽區塊（`#preview-wrap`），不像互動表單需要另外組報表 DOM，沿用既有 `@media print{header,nav.tabs,.card,.no-print,footer{display:none}}` 規則即可。
 - **Word 端**：`buildWatermarkImageRun()`（`exportPreviewAsDocx()` 正上方）用 `docx.ImageRun` + `floating:{behindDocument:true, wrap:{type:docx.TextWrappingType.NONE}}` 置中，塞進 `docx.Header`（`sectionOpts.headers`），每頁頁首重複出現。已用 JSZip 解壓縮實際產生的 `.docx` 驗證 `word/header1.xml` 含 `a:blip`/`pic:pic` 圖片參照、`word/media/` 底下確實有 png，不只是「沒有 JS 錯誤」。
 
+## 頂部跑馬燈（2026-09-21 新增）
+
+`<body>` 開頭、`<header>` 之前的一般 flow 元素（非 fixed；`nav.tabs{position:sticky;top:0}` 不需要額外 padding-top 補償），獨立 `<script>` IIFE，跟浮水印/序號授權完全無關，直接呼叫工作區共用的跑馬燈端點（`https://script.google.com/macros/s/AKfycbwKX0.../exec`，POST 空序號取得 `marquee` 陣列），`localStorage` key `industryTalentMarquee`，每 20 分鐘重抓一次。改跑馬燈內容直接編輯共用 Google Sheet 即可，不需重新部署。已用 claude-in-chrome 驗證能正確抓到即時內容並顯示。
+
 ## 指令
 
 無建置/測試指令。修改 `index.html` 後直接用瀏覽器開啟驗證，或暫起 `python -m http.server 8818 --directory industry-talent-generator` 測完關閉（8818 為工作區目前最大已用埠號 8817 之後第一個空號）。
