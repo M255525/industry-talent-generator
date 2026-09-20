@@ -43,6 +43,23 @@ v1 只涵蓋「新提報開課」情境，不含核准後的訓練計畫變更�
   - Claude／OpenAI／Gemini／OpenRouter 瀏覽器直連 `fetch()`；設定存 localStorage（key: `industryTalentApiConfig`），優化前備份到 `industryTalentCourseBackup`。逾時 180 秒；遇暫時性錯誤（429/500/503/529）自動重試最多 2 次（間隔 8、16 秒）。
   - `AI_FIELDS` 定義 15 個可改寫的敘述欄位（訓練需求調查、學員資格條件、訓練目標四段、招訓/遴選/激勵三段、四層次評估說明）；**時數、費用、材料品項、日期、師資助教資格與場地資料一律不交給模型**——這些是官方逐項核算的規則性欄位，改功能時不可放寬。
 
+## 浮水印（2026-09-21 新增）
+
+PDF（列印）與 Word 匯出皆嵌入「馬克老師」吉祥物浮水印，比照 `資料儀表板/amazon-listing-mix-calculator/` 已驗證的作法（該專案處理過同一張使用者提供的來源圖，這裡直接沿用其成果，不重新去背/裁切）：
+
+- 圖檔來源：複製 `行銷內容工具/new-product-strategy-studio/watermark-source.png`（480×315，已去背透明），用 PIL 把 alpha 通道整體乘 0.32 烤入透明度，另存本專案根目錄 `watermark-source.png`（199,324 bytes，與 amazon-listing-mix-calculator 的處理結果 byte-for-byte 相同，因為輸入與參數完全一致）。**docx.js 沒有 opacity 參數，所以淡化必須烤進圖片本身**，不能只靠 CSS，這樣同一份圖可以同時餵給 PDF 的 `<img>` 與 Word 的 `docx.ImageRun`，不需要維護兩份。
+- `WATERMARK_DATA_URI`：`index.html` 裡的 JS 常數（`categoryInfo()` 函式定義之後），base64 內嵌整張圖（約266KB字串）。若要換圖，流程是：(1) 準備好去背/裁切/淡化後的來源圖存成 `watermark-source.png`；(2) 用 Python 正則取代這行常數——**不要把 base64 貼進對話視窗**：
+  ```python
+  import re, base64
+  b64 = base64.b64encode(open('watermark-source.png', 'rb').read()).decode('ascii')
+  html = open('index.html', encoding='utf-8').read()
+  html = re.sub(r'const WATERMARK_DATA_URI = "data:image/png;base64,[^"]+";',
+                'const WATERMARK_DATA_URI = "data:image/png;base64,' + b64 + '";', html, count=1)
+  open('index.html', 'w', encoding='utf-8').write(html)
+  ```
+- **PDF／列印端**：`#printWatermark`（`<body>` 開頭）平常 `display:none`，只在 `@media print` 顯示為 `position:fixed;inset:0` 的置中 `<img>`（`initWatermark()` 把 `WATERMARK_DATA_URI` 寫進 `#wmImg`），逐字比照 `mandala-thinking`/`new-product-strategy-studio` 已驗證的 CSS 結構。**浮水印務必用 `<img>` 而非 CSS `background-image`**——瀏覽器「列印背景圖形」選項預設關閉，`background-image` 印不出來，`<img>` 是內容元素不受此限制（`restaurant-feasibility-calculator` CLAUDE.md 記載的既有教訓）。本工具的「預覽與列印」分頁本身就是獨立靜態預覽區塊（`#preview-wrap`），不像互動表單需要另外組報表 DOM，沿用既有 `@media print{header,nav.tabs,.card,.no-print,footer{display:none}}` 規則即可。
+- **Word 端**：`buildWatermarkImageRun()`（`exportPreviewAsDocx()` 正上方）用 `docx.ImageRun` + `floating:{behindDocument:true, wrap:{type:docx.TextWrappingType.NONE}}` 置中，塞進 `docx.Header`（`sectionOpts.headers`），每頁頁首重複出現。已用 JSZip 解壓縮實際產生的 `.docx` 驗證 `word/header1.xml` 含 `a:blip`/`pic:pic` 圖片參照、`word/media/` 底下確實有 png，不只是「沒有 JS 錯誤」。
+
 ## 指令
 
 無建置/測試指令。修改 `index.html` 後直接用瀏覽器開啟驗證，或暫起 `python -m http.server 8818 --directory industry-talent-generator` 測完關閉（8818 為工作區目前最大已用埠號 8817 之後第一個空號）。
